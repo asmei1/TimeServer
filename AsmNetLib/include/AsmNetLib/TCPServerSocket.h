@@ -1,11 +1,9 @@
 #pragma once
-#include <winsock2.h>
-#include "Types.h"
 #include <thread>
 #include <atomic>
-#include <string>
 
 #include "cpptinytools/ResumableTask.hpp"
+#include "NetworkHeaders.hpp"
 
 namespace anl
 {

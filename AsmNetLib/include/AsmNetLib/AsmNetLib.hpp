@@ -2,7 +2,6 @@
 //#pragma comment(lib,"ws2_32.lib") //Winsock Library
 
 #include "NetworkHeaders.hpp"
-#include "Types.h"
 #include "ILogger.hpp"
 #include "AsmNetwork.h"
 #include "MulticastSocket.h"

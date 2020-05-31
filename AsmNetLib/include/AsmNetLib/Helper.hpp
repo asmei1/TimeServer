@@ -1,13 +1,11 @@
 #pragma once
 #include <string>
-#include <vector>
 #include <optional>
-#include <winsock2.h>
+
+#include "NetworkHeaders.hpp"
 
 namespace anl
 {
-   class InetAddress;
-
    // Function to validate an IP address
    bool validateIP(const std::string& ip);
 

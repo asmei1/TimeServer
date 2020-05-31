@@ -1,5 +1,4 @@
 #pragma once
-#include <memory.h>
 #include <functional>
 
 namespace anl
@@ -9,7 +8,8 @@ namespace anl
    class TCPSocket;
    class MulticastSocket;
    class TCPServerSocket;
-
+   class InetAddress;
+   
    using Data = std::vector<char>;
 
    using MulticastSocketUPtr = std::unique_ptr<MulticastSocket>;

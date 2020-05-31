@@ -1,15 +1,10 @@
 #pragma once
-#include <winsock2.h>
-#include <string>
+
 #include <vector>
-#include <functional>
-#include <optional>
-#include "Types.h"
-#include <stdexcept>
+#include "NetworkHeaders.hpp"
 
 namespace anl
 {
-   class InetAddress;
 
    class MulticastSocket
    {

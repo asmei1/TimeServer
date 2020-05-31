@@ -1,7 +1,5 @@
 #pragma once
-#include <winsock2.h>
-#include <memory>
-#include "Types.h"
+#include "NetworkHeaders.hpp"
 
 namespace anl
 {
