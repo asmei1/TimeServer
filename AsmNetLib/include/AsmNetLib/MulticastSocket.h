@@ -10,7 +10,7 @@ namespace anl
    {
       friend class UDPServerSocket;
    public:
-      MulticastSocket(ILogger* logger);
+      MulticastSocket();
 
       ~MulticastSocket();
 
@@ -28,7 +28,6 @@ namespace anl
 
 
       bool receiveInitialized = false;
-      ILogger* logger;
       sockaddr_in addrr;
       SOCKET socketHandler;
    };

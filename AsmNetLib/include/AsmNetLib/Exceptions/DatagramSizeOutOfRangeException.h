@@ -1,6 +1,5 @@
 #pragma once
-#include <exception>
-
+#include <stdexcept>
 namespace anl
 {
    class DatagramSizeOutOfRangeException : std::runtime_error

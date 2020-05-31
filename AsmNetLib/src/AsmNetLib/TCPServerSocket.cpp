@@ -1,14 +1,13 @@
 #include "TCPServerSocket.h"
-#include "ILogger.hpp"
-#include "TCPSocket.h"
 #include <cassert>
+
+#include "TCPSocket.h"
 #include "Exceptions/BindException.h"
 #include "Exceptions/TCPServerSocketCreateException.h"
 using namespace anl;
 
-TCPServerSocket::TCPServerSocket(ILogger* logger)
+TCPServerSocket::TCPServerSocket()
 {
-   this->logger = logger;
 }
 
 TCPServerSocket::~TCPServerSocket()
@@ -63,7 +62,6 @@ bool TCPServerSocket::startListening()
       initialize(this->portNumber);
    }
 
-   this->logger->trace("Waiting for incoming client....");
 
    //create task to listening
    this->worker = new ClientsListeningTask(this);
@@ -131,11 +129,10 @@ void TCPServerSocket::ClientsListeningTask::run()
       //if something went wrong
       if(newSocket == INVALID_SOCKET)
       {
-         this->socket->logger->error("Failed to accepted new client: " + std::to_string(WSAGetLastError()));
          break;
       }
 
       //if everything is okey, execute callback function
-      this->socket->clientConnectionHandler(TCPSocketUPtr(new TCPSocket(this->socket->logger, newSocket, client)));
+      this->socket->clientConnectionHandler(TCPSocketUPtr(new TCPSocket(newSocket, client)));
    }
 }

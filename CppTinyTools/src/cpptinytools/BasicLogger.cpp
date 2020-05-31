@@ -1,15 +1,14 @@
 #include "BasicLogger.hpp"
-#include <thread>
-#include <sstream>
-#include <ctime>
+#include <cassert>
 #include <chrono>
+#include <ctime>
 #include <iomanip>
 #include <iostream>
-#include <cassert>
-#include "Helper.hpp"
-#include "cpptinytools/StringTools.hpp"
+#include <sstream>
+#include <thread>
+#include "StringTools.hpp"
 
-using namespace anl;
+using namespace ctt::logging;
 
 BasicLogger::BasicLogger(const std::string& loggingFormat)
    : ILogger(loggingFormat), enableLoggingToFile(false)

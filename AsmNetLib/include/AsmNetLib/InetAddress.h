@@ -1,6 +1,7 @@
 #pragma once
 #include "NetworkHeaders.hpp"
 #include "Helper.hpp"
+#include "cpptinytools/StringTools.hpp"
 
 namespace anl
 {
@@ -52,6 +53,29 @@ namespace anl
       {
          return inet_ntoa(addr.sin_addr) + std::string(":") + std::to_string(addr.sin_port);
       }
+
+
+      static bool validateIPv4(const std::string& ip)
+      {
+         // split the std::string into tokens
+         std::vector<std::string> slist = ctt::StringTools::split(ip, ".");
+         // if token size is not equal to four
+         if(slist.size() != 4)
+         {
+            return false;
+         }
+
+         for(const auto& str : slist)
+         {
+            // check that std::string is number, positive, and range
+            if(false == ctt::StringTools::isContainOnlyDigits(str) || std::stoi(str) < 0 || std::stoi(str) > 255)
+            {
+               return false;
+            }
+         }
+         return true;
+      }
+
 
    private:
       sockaddr_in addr;

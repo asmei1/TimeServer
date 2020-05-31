@@ -11,7 +11,7 @@ namespace anl
    class TCPServerSocket
    {
    public:
-      TCPServerSocket(ILogger* logger);
+      TCPServerSocket();
 
       ~TCPServerSocket();
 
@@ -43,8 +43,6 @@ namespace anl
       bool initialized = false;
       int portNumber;
       SOCKET serverSocketHandler = SOCKET_ERROR;
-
-      ILogger* logger;
    };
 }
 

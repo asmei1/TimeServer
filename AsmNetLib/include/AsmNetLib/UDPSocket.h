@@ -1,7 +1,5 @@
 #pragma once
 #include <vector>
-#include <functional>
-
 #include "NetworkHeaders.hpp"
 
 namespace anl
@@ -12,8 +10,8 @@ namespace anl
    {
       friend class UDPServerSocket;
    public:
-      UDPSocket(ILogger* logger);
-      UDPSocket(ILogger* logger, uint16_t portNumber, bool enableBroadcast = false);
+      UDPSocket();
+      UDPSocket(uint16_t portNumber, bool enableBroadcast = false);
 
       ~UDPSocket();
 
@@ -26,7 +24,6 @@ namespace anl
 
    private:
       void enableBroadcast();
-      ILogger* logger;
       sockaddr_in addrr;
       SOCKET socketHandler;
    };

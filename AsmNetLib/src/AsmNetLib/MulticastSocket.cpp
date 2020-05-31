@@ -1,12 +1,8 @@
 #include "MulticastSocket.h"
-#include "ILogger.hpp"
-#include "WS2tcpip.h"
+#include <cassert>
 #include "Helper.hpp"
 #include "InetAddress.h"
-#include "Exceptions/TimeoutException.h"
 #include "Exceptions/DatagramSizeOutOfRangeException.h"
-#include "Exceptions/BindException.h"
-#include <cassert>
 
 using namespace anl;
 
@@ -30,9 +26,8 @@ void MulticastSocket::disableMulticastLoop()
 }
 
 
-MulticastSocket::MulticastSocket(ILogger* logger)
+MulticastSocket::MulticastSocket()
 {
-   this->logger = logger;
    this->socketHandler = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
    if(SOCKET_ERROR == socketHandler)

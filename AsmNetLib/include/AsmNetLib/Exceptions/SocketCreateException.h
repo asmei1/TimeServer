@@ -1,6 +1,5 @@
 #pragma once
 #include <stdexcept>
-#include <string>
 
 class TCPServerSocketCreateException : public std::runtime_error
 {

@@ -12,8 +12,8 @@ namespace anl
    {
       friend class TCPServerSocket;
    public:
-      TCPSocket(ILogger* logger);
-      TCPSocket(ILogger* logger, SOCKET socketHandler, const sockaddr_in& addrr);
+      TCPSocket();
+      TCPSocket(SOCKET socketHandler, const sockaddr_in& addrr);
 
       ~TCPSocket();
 
@@ -26,8 +26,8 @@ namespace anl
       bool sendData(const Data& data) const;
       std::optional<Data> recvData() const;
       sockaddr_in getRawSettings() const;
+
    private:
-      ILogger* logger;
       sockaddr_in addrr;
       SOCKET socketHandler;
       bool connected = false;

@@ -1,19 +1,16 @@
 #include "TCPSocket.h"
-#include "ILogger.hpp"
 #include "Helper.hpp"
 #include "InetAddress.h"
 #define RECV_BUFFER_SIZE 512
 
 using namespace anl;
 
-TCPSocket::TCPSocket(ILogger* logger)
+TCPSocket::TCPSocket()
 {
-   this->logger = logger;
 }
 
-TCPSocket::TCPSocket(ILogger* logger, SOCKET socketHandler, const sockaddr_in& addrr)
+TCPSocket::TCPSocket(SOCKET socketHandler, const sockaddr_in& addrr)
 {
-   this->logger = logger;
    this->socketHandler = socketHandler;
    this->addrr = addrr;
 
@@ -29,7 +26,6 @@ int TCPSocket::initialize()
    if(INVALID_SOCKET == socketHandler)
    {
       errorCode = WSAGetLastError();
-      this->logger->error("Could not create a socket: " + std::to_string(errorCode));
    }
 
    return errorCode;

@@ -4,7 +4,7 @@
 
 #include "ILogger.hpp"
 
-namespace anl
+namespace ctt::logging
 {
    class BasicLogger : public ILogger
    {

@@ -6,9 +6,6 @@
 
 namespace anl
 {
-   // Function to validate an IP address
-   bool validateIP(const std::string& ip);
-
    void getLocalInterface(in_addr& localInterface);
 
    std::string hostNameToIP(const std::string& hostName);

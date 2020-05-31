@@ -1,5 +1,4 @@
 #include "UDPSocket.h"
-#include "ILogger.hpp"
 #include "Helper.hpp"
 #include "InetAddress.h"
 #include "Exceptions/TimeoutException.h"
@@ -9,9 +8,8 @@
 using namespace anl;
 
 
-UDPSocket::UDPSocket(ILogger* logger)
+UDPSocket::UDPSocket()
 {
-   this->logger = logger;
    this->socketHandler = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
    if(SOCKET_ERROR == socketHandler)
@@ -21,11 +19,8 @@ UDPSocket::UDPSocket(ILogger* logger)
 
 }
 
-UDPSocket::UDPSocket(ILogger* logger, uint16_t portNumber, bool enableBroadcast)
+UDPSocket::UDPSocket(uint16_t portNumber, bool enableBroadcast)
 {
-   this->logger = logger;
-
-   
    this->socketHandler = socket(AF_INET, SOCK_DGRAM, enableBroadcast ? 0 : IPPROTO_UDP);
 
    if(SOCKET_ERROR == socketHandler)

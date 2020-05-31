@@ -2,7 +2,7 @@
 #include <string>
 #include <array>
 
-namespace anl
+namespace ctt::logging
 {
    class ILogger
    {

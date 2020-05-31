@@ -3,27 +3,6 @@
 #include "InetAddress.h"
 #include "cpptinytools/StringTools.hpp"
 
-bool anl::validateIP(const std::string& ip)
-{
-   // split the std::string into tokens
-   std::vector<std::string> slist = ctt::StringTools::split(ip, ".");
-   // if token size is not equal to four
-   if(slist.size() != 4)
-   {
-      return false;
-   }
-
-   for(const auto& str : slist) 
-   {
-      // check that std::string is number, positive, and range
-      if(false == ctt::StringTools::isContainOnlyDigits(str) || std::stoi(str) < 0 || std::stoi(str) > 255)
-      {
-         return false;
-      }
-   }
-   return true;
-}
-
 void anl::getLocalInterface(in_addr& localInterface)
 {
    char myname[32] = { 0 };
@@ -59,7 +38,7 @@ std::optional<std::string> anl::parseAddress(const std::string& hostName)
 {
    std::string ip = hostName;
 
-   if(false == validateIP(hostName))
+   if(false == InetAddress::validateIPv4(hostName))
    {
       if(hostName == "localhost")
       {
