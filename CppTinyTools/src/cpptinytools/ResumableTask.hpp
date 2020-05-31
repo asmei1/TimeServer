@@ -1,7 +1,7 @@
 #pragma once
 #include "StoppableTask.hpp"
 
-namespace anl
+namespace ctt
 {
    class ResumableTask : public StoppableTask
    {
@@ -13,6 +13,7 @@ namespace anl
          this->resumed = true;
          this->pauseCv.notify_one();
       }
+
       void pause()
       {
          std::unique_lock<std::mutex> lk(this->pauseMutex);
@@ -26,6 +27,7 @@ namespace anl
          std::unique_lock<std::mutex> lk(this->pauseMutex);
          pauseCv.wait(lk, [this] {return this->resumed.load(); });
       }
+
    private:
       std::condition_variable pauseCv;
       std::mutex pauseMutex;

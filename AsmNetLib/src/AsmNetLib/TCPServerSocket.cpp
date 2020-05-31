@@ -67,7 +67,7 @@ bool TCPServerSocket::startListening()
 
    //create task to listening
    this->worker = new ClientsListeningTask(this);
-   this->listeningThread = std::thread(&StoppableTask::run, this->worker);
+   this->listeningThread = std::thread(&ctt::StoppableTask::run, this->worker);
 
    return true;
 }

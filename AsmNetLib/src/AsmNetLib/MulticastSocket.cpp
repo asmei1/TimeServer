@@ -29,14 +29,6 @@ void MulticastSocket::disableMulticastLoop()
    }
 }
 
-void MulticastSocket::getLocalInterface(in_addr& localInterface)
-{
-   char myname[32] = { 0 };
-   gethostname(myname, 32);
-   hostent* he;
-   he = gethostbyname(myname);
-   memcpy(&localInterface.s_addr, *he->h_addr_list, 4);
-}
 
 MulticastSocket::MulticastSocket(ILogger* logger)
 {

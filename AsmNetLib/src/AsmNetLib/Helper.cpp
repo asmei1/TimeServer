@@ -1,40 +1,12 @@
 #include "Helper.hpp"
 #include <winsock2.h>
 #include "InetAddress.h"
- 
-bool anl::replace(std::string& str, const std::string& from, const std::string& to)
-{
-   size_t start_pos = str.find(from);
-   if(start_pos == std::string::npos)
-      return false;
-   str.replace(start_pos, from.length(), to);
-   return true;
-}
-
-bool anl::chkNumber(const std::string& str)
-{
-   return false == str.empty() && (str.find_first_not_of("[0123456789]") == std::string::npos);
-}
-
-std::vector<std::string> anl::split(const std::string& str, char delim)
-{
-   auto i = 0;
-   std::vector<std::string> list;
-   auto pos = str.find(delim);
-   while(pos != std::string::npos) 
-   {
-      list.push_back(str.substr(i, pos - i));
-      i = ++pos;
-      pos = str.find(delim, pos);
-   }
-   list.push_back(str.substr(i, str.length()));
-   return list;
-}
+#include "cpptinytools/StringTools.hpp"
 
 bool anl::validateIP(const std::string& ip)
 {
    // split the std::string into tokens
-   std::vector<std::string> slist = split(ip, '.');
+   std::vector<std::string> slist = ctt::StringTools::split(ip, ".");
    // if token size is not equal to four
    if(slist.size() != 4)
    {
@@ -44,7 +16,7 @@ bool anl::validateIP(const std::string& ip)
    for(const auto& str : slist) 
    {
       // check that std::string is number, positive, and range
-      if(false == chkNumber(str) || std::stoi(str) < 0 || std::stoi(str) > 255)
+      if(false == ctt::StringTools::isContainOnlyDigits(str) || std::stoi(str) < 0 || std::stoi(str) > 255)
       {
          return false;
       }
@@ -52,9 +24,18 @@ bool anl::validateIP(const std::string& ip)
    return true;
 }
 
+void anl::getLocalInterface(in_addr& localInterface)
+{
+   char myname[32] = { 0 };
+   gethostname(myname, 32);
+   //dont free this memory, it has be done by system
+   hostent* he = gethostbyname(myname);
+   memcpy(&localInterface.s_addr, *he->h_addr_list, 4);
+}
+
 std::string anl::hostNameToIP(const std::string& hostName)
 {
-   struct hostent* he = gethostbyname(hostName.c_str());
+   hostent* he = gethostbyname(hostName.c_str());
    std::string ip;
 
    if(nullptr == he)
@@ -62,9 +43,9 @@ std::string anl::hostNameToIP(const std::string& hostName)
       //gethostbyname failed
       throw WSAGetLastError();
    }
-   struct in_addr** addr_list;
+   in_addr** addr_list;
    //Cast the h_addr_list to in_addr , since h_addr_list also has the ip address in long format only
-   addr_list = (struct in_addr**)he;
+   addr_list = reinterpret_cast<in_addr**>(he);
 
    if(addr_list[0] != nullptr)
    {

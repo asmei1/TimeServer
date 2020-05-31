@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cassert>
 #include "Helper.hpp"
+#include "cpptinytools/StringTools.hpp"
 
 using namespace anl;
 
@@ -38,21 +39,20 @@ void BasicLogger::log(const std::string& msg, const Level& level) const
 {
    std::lock_guard<std::mutex> lock(this->mutex);
 
-
    std::cout << parseLog(msg, level) << std::endl;
 }
 
 std::string BasicLogger::parseLog(const std::string& msg, const Level& level) const
 {
    std::string output = this->format;
-   anl::replace(output, "%LOG_LEVEL%", levelToStr(level));
+   ctt::StringTools::replace(output, "%LOG_LEVEL%", levelToStr(level));
 
    const auto threadIdPos = output.find("%THREAD_ID%");
    if(std::string::npos != threadIdPos)
    {
       std::stringstream ss;
       ss << std::this_thread::get_id();
-      anl::replace(output, "%THREAD_ID%", ss.str());
+      ctt::StringTools::replace(output, "%THREAD_ID%", ss.str());
    }
 
    const auto timePos = output.find("%TIME%");
@@ -64,7 +64,7 @@ std::string BasicLogger::parseLog(const std::string& msg, const Level& level) co
       errno_t err = localtime_s(&buf, &timenow);
       if(std::strftime(timedisplay, sizeof(timedisplay), this->dateTimeFormat.c_str(), &buf))
       {
-         anl::replace(output, "%TIME%", timedisplay);
+         ctt::StringTools::replace(output, "%TIME%", timedisplay);
       }
    }
 

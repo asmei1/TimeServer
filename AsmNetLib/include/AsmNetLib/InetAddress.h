@@ -1,4 +1,5 @@
 #pragma once
+#include "NetworkHeaders.hpp"
 #include "Helper.hpp"
 
 namespace anl
@@ -11,42 +12,49 @@ namespace anl
       {
          const auto& ipOpt = parseAddress(hostName);
 
-         this->addrr.sin_addr.s_addr = inet_addr(ipOpt->c_str());
-         this->addrr.sin_family = AF_INET;
-         this->addrr.sin_port = htons(portNumber);
+         this->addr.sin_family = AF_INET;
+         this->addr.sin_port = htons(portNumber);
+         inet_pton(AF_INET, ipOpt->c_str(), &addr);
       }
 
       InetAddress(const sockaddr_in& addrr)
       {
-         this->addrr = addrr;
+         this->addr = addrr;
       }
 
       sockaddr_in getRawSettings() const
       {
-         return this->addrr;
+         return this->addr;
       }
 
       sockaddr* toSockAddr() const
       {
-         return (sockaddr*)&addrr;
+         return (sockaddr*)&addr;
       }
 
       int getStructSize() const
       {
-         return sizeof(addrr);
+         return sizeof(addr);
       }
 
       static InetAddress broadcastAddress(int port)
       {
          InetAddress inet{};
-         inet.addrr.sin_addr.s_addr = inet_addr("255.255.255.255");
-         inet.addrr.sin_family = AF_INET;
-         inet.addrr.sin_port = htons(port);
+
+         inet.addr.sin_family = AF_INET;
+         inet.addr.sin_port = htons(port);
+         inet_pton(AF_INET, "255.255.255.255", &inet.addr);
+
          return inet;
       }
 
+      std::string toString()
+      {
+         return inet_ntoa(addr.sin_addr) + std::string(":") + std::to_string(addr.sin_port);
+      }
+
    private:
-      sockaddr_in addrr;
+      sockaddr_in addr;
 
    };
 }

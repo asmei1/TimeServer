@@ -1,9 +1,8 @@
 #pragma once
-#include <iostream>
 #include <chrono>
 #include <future>
 
-namespace anl
+namespace ctt
 {
    /*
     * Class that encapsulates promise and future object and

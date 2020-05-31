@@ -13,20 +13,22 @@ namespace anl
 
    class UDPSocket
    {
-      friend class AsmNetwork;
       friend class UDPServerSocket;
-
+   public:
       UDPSocket(ILogger* logger);
       UDPSocket(ILogger* logger, uint16_t portNumber, bool enableBroadcast = false);
-      void enableBroadcast();
-   public:
+
       ~UDPSocket();
+
+
       void closeSocket();
       void sendData(const Data& data, const InetAddress& addrr) const;
       void recvData(Data& data, const InetAddress& addrr, long timeoutUSec = -1) const;
       InetAddress recvData(Data& data) const;
       sockaddr_in getRawSettings() const;
+
    private:
+      void enableBroadcast();
       ILogger* logger;
       sockaddr_in addrr;
       SOCKET socketHandler;

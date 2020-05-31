@@ -13,14 +13,13 @@ namespace anl
 
    class MulticastSocket
    {
-      friend class AsmNetwork;
       friend class UDPServerSocket;
-
-
+   public:
       MulticastSocket(ILogger* logger);
 
-   public:
       ~MulticastSocket();
+
+
       void closeSocket();
 
       void initilizeRecv(const InetAddress& addr);
@@ -29,10 +28,8 @@ namespace anl
       sockaddr_in getRawSettings() const;
 
    private:
-
       void reusePortEnabled();
       void disableMulticastLoop();
-      void getLocalInterface(in_addr& localInterface);
 
 
       bool receiveInitialized = false;

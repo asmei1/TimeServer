@@ -1,9 +1,10 @@
 #pragma once
-#include <winsock2.h>
-#include <string>
-#include <vector>
 #include <functional>
 #include <optional>
+#include <string>
+#include <vector>
+
+#include "NetworkHeaders.hpp"
 #include "Types.h"
 
 namespace anl
@@ -12,12 +13,14 @@ namespace anl
 
    class TCPSocket
    {
-      friend class AsmNetwork;
       friend class TCPServerSocket;
+   public:
       TCPSocket(ILogger* logger);
       TCPSocket(ILogger* logger, SOCKET socketHandler, const sockaddr_in& addrr);
-   public:
+
       ~TCPSocket();
+
+
       int initialize();
       void connectTo(const InetAddress& address);
       bool isConnected() const;

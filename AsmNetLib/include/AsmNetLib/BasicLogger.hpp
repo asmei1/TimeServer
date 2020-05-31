@@ -9,15 +9,13 @@ namespace anl
    class BasicLogger : public ILogger
    {
    public:
-      explicit BasicLogger(const std::string& loggingFormat);
-      explicit BasicLogger(const std::string& fileName, const std::string& loggingFormat);
-        
+      explicit BasicLogger(const std::string& loggingFormat = "[%TIME%] [%LOG_LEVEL%]: ");
+      explicit BasicLogger(const std::string& fileName, const std::string& loggingFormat = "[%TIME%] [%LOG_LEVEL%]: ");
 
       ~BasicLogger() override = default;
 
 
       inline std::string levelToStr(const Level& level) const;
-      
 
       void log(const std::string& msg, const Level& level) const override;
 

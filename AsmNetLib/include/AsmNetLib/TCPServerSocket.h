@@ -3,17 +3,18 @@
 #include "Types.h"
 #include <thread>
 #include <atomic>
-#include "ResumableTask.hpp"
 #include <string>
+
+#include "cpptinytools/ResumableTask.hpp"
 
 namespace anl
 {
-   
+
    class TCPServerSocket
    {
-      friend class AsmNetwork;
-      TCPServerSocket(ILogger* logger);
    public:
+      TCPServerSocket(ILogger* logger);
+
       ~TCPServerSocket();
 
       bool initialize(int portNumber);
@@ -25,12 +26,12 @@ namespace anl
       void resumeListening();
 
       void registerClientConnectedHandler(const ClientConnectedHandler& handler);
+
    private:
-      
-      class ClientsListeningTask : public ResumableTask
+      class ClientsListeningTask : public ctt::ResumableTask
       {
       public:
-         ClientsListeningTask(TCPServerSocket* serverSocket) : socket(serverSocket){}
+         ClientsListeningTask(TCPServerSocket* serverSocket) : socket(serverSocket) {}
          void run() override;
       private:
          TCPServerSocket* socket;

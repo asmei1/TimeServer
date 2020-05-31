@@ -32,15 +32,20 @@ set(libsrc
 
 
 include_directories("include/AsmNetLib", "include/AsmNetLib/Exceptions")
-add_library("AsmNetLib" STATIC ${libsrc})
+add_library("AsmNetLib" STATIC ${libsrc} "include/AsmNetLib/Headers.hpp")
 set_target_properties("AsmNetLib" PROPERTIES
   #PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/config.h")
   PUBLIC_HEADER ${libinclude})
 
   
 if(WIN32)
-  target_link_libraries(AsmNetLib wsock32 ws2_32)
+  target_link_libraries(AsmNetLib CppTinyTools wsock32 ws2_32)
 endif()
+
+target_include_directories(AsmNetLib PUBLIC 
+                          "${CMAKE_SOURCE_DIR}/CppTinyTools/src"
+                          )
+
 
 install(TARGETS AsmNetLib
   # IMPORTANT: Add the foo library to the "export-set"
