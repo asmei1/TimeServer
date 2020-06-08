@@ -4,6 +4,7 @@
 
 #include "cpptinytools/ResumableTask.hpp"
 #include "NetworkHeaders.hpp"
+#include "SocketDescription.hpp"
 
 namespace anl
 {
@@ -11,13 +12,11 @@ namespace anl
    class TCPServerSocket
    {
    public:
-      TCPServerSocket();
+      TCPServerSocket(const InetAddress& address);
 
       ~TCPServerSocket();
 
-      bool initialize(int portNumber);
-      bool isReadyForListening() const;
-      bool startListening();
+      void startListening();
       void stopListening();
 
       void pauseListening();
@@ -40,9 +39,8 @@ namespace anl
       std::atomic_bool listening = false;
       ClientConnectedHandler clientConnectionHandler;
 
-      bool initialized = false;
       int portNumber;
-      SOCKET serverSocketHandler = SOCKET_ERROR;
+      SocketDescription socketDesc;
    };
 }
 

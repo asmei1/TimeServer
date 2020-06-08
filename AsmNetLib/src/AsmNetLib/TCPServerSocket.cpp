@@ -1,13 +1,15 @@
-#include "TCPServerSocket.h"
+#include "TCPServerSocket.hpp"
 #include <cassert>
 
-#include "TCPSocket.h"
-#include "Exceptions/BindException.h"
-#include "Exceptions/TCPServerSocketCreateException.h"
+#include "TCPSocket.hpp"
+#include "Exceptions/BindException.hpp"
 using namespace anl;
 
-TCPServerSocket::TCPServerSocket()
+TCPServerSocket::TCPServerSocket(const InetAddress& address)
 {
+   this->portNumber = portNumber;
+   this->socketDesc = SocketDescription(SocketDescription::SocketType::TCP, IPPROTO_TCP);
+   this->socketDesc.bind(address);
 }
 
 TCPServerSocket::~TCPServerSocket()
@@ -15,59 +17,11 @@ TCPServerSocket::~TCPServerSocket()
    stopListening();
 }
 
-bool TCPServerSocket::initialize(int portNumber)
+void TCPServerSocket::startListening()
 {
-   this->portNumber = portNumber;
-   this->initialized = true;
-
-   int errorCode = 0;
-
-   //create socket
-   this->serverSocketHandler = socket(AF_INET, SOCK_STREAM, 0);
-   if(INVALID_SOCKET == this->serverSocketHandler)
-   {
-      throw TCPServerSocketCreateException(WSAGetLastError());
-   }
-   else
-   {
-      sockaddr_in server;
-      server.sin_family = AF_INET;
-      server.sin_addr.s_addr = INADDR_ANY;
-      server.sin_port = htons(portNumber);
-
-      //bind
-      if(SOCKET_ERROR == bind(this->serverSocketHandler, reinterpret_cast<sockaddr*>(&server), sizeof(server)))
-      {
-         throw BindException(WSAGetLastError());
-      }
-   }
-
-   return errorCode;
-}
-
-bool TCPServerSocket::isReadyForListening() const
-{
-   return this->initialized;
-}
-
-bool TCPServerSocket::startListening()
-{
-   if(SOCKET_ERROR == this->serverSocketHandler)
-   {
-      throw std::exception{ "Cannot started listening, if server socket was not initialized!" };
-   }
-
-   if(false == this->initialized)
-   {
-      initialize(this->portNumber);
-   }
-
-
    //create task to listening
    this->worker = new ClientsListeningTask(this);
    this->listeningThread = std::thread(&ctt::StoppableTask::run, this->worker);
-
-   return true;
 }
 
 
@@ -76,10 +30,9 @@ void TCPServerSocket::stopListening()
    assert(this->worker && "Start listening, before close it!");
    //clear flags
    this->listening = false;
-   this->initialized = false;
 
    //close socket and listening task
-   closesocket(this->serverSocketHandler);
+   this->socketDesc.closeSocket();
    this->worker->stop();
    this->listeningThread.join();
    delete this->worker;
@@ -109,17 +62,12 @@ void TCPServerSocket::registerClientConnectedHandler(const ClientConnectedHandle
 
 void TCPServerSocket::ClientsListeningTask::run()
 {
-   listen(this->socket->serverSocketHandler, 0);
-   sockaddr_in client;
-   int size = sizeof(sockaddr_in);
    while(true)
    {
       this->waitIfPaused();
 
-
-      SOCKET newSocket;
-      newSocket = accept(this->socket->serverSocketHandler, reinterpret_cast<sockaddr*>(&client), &size);
-
+      auto socket = this->socket->socketDesc.accept();
+   
       //if stopListening method was executed, break the loop
       if(true == this->stopRequested())
       {
@@ -127,12 +75,12 @@ void TCPServerSocket::ClientsListeningTask::run()
       }
 
       //if something went wrong
-      if(newSocket == INVALID_SOCKET)
+      if(false == socket.has_value())
       {
          break;
       }
 
       //if everything is okey, execute callback function
-      this->socket->clientConnectionHandler(TCPSocketUPtr(new TCPSocket(newSocket, client)));
+      this->socket->clientConnectionHandler(TCPSocketUPtr(new TCPSocket(socket.value())));
    }
 }

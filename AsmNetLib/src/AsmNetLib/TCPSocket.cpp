@@ -1,113 +1,47 @@
-#include "TCPSocket.h"
-#include "Helper.hpp"
-#include "InetAddress.h"
-#define RECV_BUFFER_SIZE 512
+#include "TCPSocket.hpp"
+#include "InetAddress.hpp"
 
 using namespace anl;
 
+TCPSocket::TCPSocket(SocketDescription socketDescription)
+{
+   this->socketDesc = socketDescription;
+}
+
 TCPSocket::TCPSocket()
 {
-}
-
-TCPSocket::TCPSocket(SOCKET socketHandler, const sockaddr_in& addrr)
-{
-   this->socketHandler = socketHandler;
-   this->addrr = addrr;
-
-   //check if still connected
-
-   this->connected = true;
-}
-
-int TCPSocket::initialize()
-{
-   int errorCode = 0;
-   this->socketHandler = socket(AF_INET, SOCK_STREAM, 0);
-   if(INVALID_SOCKET == socketHandler)
-   {
-      errorCode = WSAGetLastError();
-   }
-
-   return errorCode;
+   this->socketDesc = SocketDescription(SocketDescription::SocketType::TCP, IPPROTO_TCP);
 }
 
 void TCPSocket::connectTo(const InetAddress& address)
 {
-   if(true == this->connected)
-   {
-      closesocket(this->socketHandler);
-   }
-
-   bool success = 0 <= connect(this->socketHandler, address.toSockAddr(), address.getStructSize());
-
-   if(false == success)
-   {
-      throw WSAGetLastError();
-   }
-
-   this->connected = success;
-}
-
-bool TCPSocket::isConnected() const
-{
-   return this->connected;
+   this->socketDesc.connectTo(address);
 }
 
 void TCPSocket::closeSocket()
 {
-   closesocket(this->socketHandler);
+   this->socketDesc.closeSocket();
 }
 
 bool TCPSocket::sendData(const Data& data) const
 {
-   bool success = true;
-
-   if(false == this->connected)
-   {
-      throw std::exception{ "TCPSocket is not connected!" };
-   }
-
-   if(false == send(this->socketHandler, data.data(), data.size(), 0))
-   {
-      success = false;
-   }
-
-   return success;
+   return this->socketDesc.sendPacketData(data);
 }
 
 std::optional<Data> TCPSocket::recvData() const
 {
-   if(false == this->connected)
+   try
    {
-      throw std::exception{ "TCPSocket is not connected!" };
+      Data recvData;
+      this->socketDesc.recvDataFromStream(recvData, RECV_BUFFER_SIZE);
+      return recvData;
+   }catch(...)
+   {
+      return std::nullopt;
    }
-
-   Data recvData;
-   int receivedBytes;
-   do
-   {
-      char buff[RECV_BUFFER_SIZE];
-      receivedBytes = recv(this->socketHandler, buff, RECV_BUFFER_SIZE, 0);
-      if(receivedBytes == SOCKET_ERROR || receivedBytes == 0)
-      {
-         return std::nullopt;
-      }
-      recvData.insert(recvData.end(), buff, buff + receivedBytes);
-
-   } while(receivedBytes >= RECV_BUFFER_SIZE);
-
-   return recvData;
-}
-
-sockaddr_in TCPSocket::getRawSettings() const
-{
-   return this->addrr;
 }
 
 TCPSocket::~TCPSocket()
 {
-   if(true == this->connected)
-   {
-      closeSocket();
-   }
+   this->closeSocket();
 }

@@ -1,6 +1,6 @@
 #include "Helper.hpp"
 #include <winsock2.h>
-#include "InetAddress.h"
+#include "InetAddress.hpp"
 #include "cpptinytools/StringTools.hpp"
 
 void anl::getLocalInterface(in_addr& localInterface)
@@ -38,7 +38,7 @@ std::optional<std::string> anl::parseAddress(const std::string& hostName)
 {
    std::string ip = hostName;
 
-   if(false == InetAddress::validateIPv4(hostName))
+   if(false == InetAddress::isIPv4AddrValid(hostName))
    {
       if(hostName == "localhost")
       {
@@ -57,14 +57,4 @@ std::optional<std::string> anl::parseAddress(const std::string& hostName)
       }
    }
    return ip;
-}
-
-std::string anl::socketAddr2String(const sockaddr_in& addr)
-{
-   return inet_ntoa(addr.sin_addr) + std::string(":") + std::to_string(addr.sin_port);
-}
-
-std::string anl::socketAddr2String(const InetAddress& addr)
-{
-   return inet_ntoa(addr.getRawSettings().sin_addr) + std::string(":") + std::to_string(addr.getRawSettings().sin_port);
 }

@@ -25,5 +25,8 @@ namespace anl
 
    using ClientConnectedHandler = std::function<void(TCPSocketUPtr)>;
 
-   static inline auto MAX_DATAGRAM_SIZE = 534;
+   static inline size_t MAX_DATAGRAM_SIZE = 534;
+   static inline size_t RECV_BUFFER_SIZE = 534;
+
+
 }

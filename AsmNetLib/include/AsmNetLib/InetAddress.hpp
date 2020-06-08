@@ -14,28 +14,15 @@ namespace anl
          const auto& ipOpt = parseAddress(hostName);
 
          this->addr.sin_family = AF_INET;
-         this->addr.sin_port = htons(portNumber);
-         inet_pton(AF_INET, ipOpt->c_str(), &addr);
+         this->addr.sin_port = (portNumber);
+         this->addr.sin_addr.S_un.S_addr = inet_addr(ipOpt->c_str());
       }
 
-      InetAddress(const sockaddr_in& addrr)
+      InetAddress(long address, short portNumber, int family = AF_INET)
       {
-         this->addr = addrr;
-      }
-
-      sockaddr_in getRawSettings() const
-      {
-         return this->addr;
-      }
-
-      sockaddr* toSockAddr() const
-      {
-         return (sockaddr*)&addr;
-      }
-
-      int getStructSize() const
-      {
-         return sizeof(addr);
+         this->addr.sin_family = family;
+         this->addr.sin_port = (portNumber);
+         this->addr.sin_addr.S_un.S_addr = address;
       }
 
       static InetAddress broadcastAddress(int port)
@@ -43,19 +30,30 @@ namespace anl
          InetAddress inet{};
 
          inet.addr.sin_family = AF_INET;
-         inet.addr.sin_port = htons(port);
-         inet_pton(AF_INET, "255.255.255.255", &inet.addr);
+         inet.addr.sin_port = (port);
+         inet.addr.sin_addr.S_un.S_addr = inet_addr("255.255.255.255");
+
+         //inet_pton(AF_INET, "255.255.255.255", &inet.addr);
 
          return inet;
       }
 
-      std::string toString()
+      int getPort() const
+      {
+         return this->addr.sin_port;
+      }
+
+      long getAddress() const
+      {
+         return this->addr.sin_addr.S_un.S_addr;
+      }
+
+      std::string toString() const
       {
          return inet_ntoa(addr.sin_addr) + std::string(":") + std::to_string(addr.sin_port);
       }
 
-
-      static bool validateIPv4(const std::string& ip)
+      static bool isIPv4AddrValid(const std::string& ip)
       {
          // split the std::string into tokens
          std::vector<std::string> slist = ctt::StringTools::split(ip, ".");
@@ -79,6 +77,5 @@ namespace anl
 
    private:
       sockaddr_in addr;
-
    };
 }
