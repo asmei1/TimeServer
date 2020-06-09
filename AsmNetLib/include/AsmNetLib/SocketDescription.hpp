@@ -17,10 +17,7 @@ namespace anl
          RAW = 3,
       };
 
-      SocketDescription() = default;
       SocketDescription(SocketType socketType, IPPROTO protocol);
-
-      ~SocketDescription();
 
       void enableBroadcast();
       void bind(const InetAddress& addr);
@@ -50,6 +47,8 @@ namespace anl
       void disableMulticastLoop() const;
 
    private:
+      SocketDescription() = default;
+
       sockaddr_in addr;
       SOCKET socketHandler = SOCKET_ERROR;
    };

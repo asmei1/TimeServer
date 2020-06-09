@@ -10,7 +10,7 @@ namespace anl
    class TCPSocket
    {
       friend class TCPServerSocket;
-      TCPSocket(SocketDescription socketDescription);
+      TCPSocket(const SocketDescription& socketDescription);
    public:
       TCPSocket();
       ~TCPSocket();
@@ -18,13 +18,13 @@ namespace anl
       void closeSocket();
 
       void connectTo(const InetAddress& address);
-      bool isConnected() const;
+      //bool isConnected() const;
 
       bool sendData(const Data& data) const;
       std::optional<Data> recvData() const;
 
    private:
-      SocketDescription socketDesc;
+      SocketDescription socketDesc{ SocketDescription::SocketType::TCP, IPPROTO_TCP };
    };
 
 }

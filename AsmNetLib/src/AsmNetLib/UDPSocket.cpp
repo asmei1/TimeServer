@@ -8,12 +8,10 @@ using namespace anl;
 
 UDPSocket::UDPSocket()
 {
-   this->socketDesc = SocketDescription(SocketDescription::SocketType::UDP, IPPROTO_UDP);
 } 
 
 UDPSocket::UDPSocket(const InetAddress& address)
 {
-   this->socketDesc = SocketDescription(SocketDescription::SocketType::UDP, IPPROTO_UDP);
    this->socketDesc.bind(address);
 }
 
@@ -28,7 +26,10 @@ UDPSocket UDPSocket::broadcastSocket(const InetAddress& address)
 
 void UDPSocket::closeSocket()
 {
-   this->socketDesc.closeSocket();
+   if(true == this->socketDesc.isCreated())
+   {
+      this->socketDesc.closeSocket();
+   }
 }
 
 void UDPSocket::sendData(const Data& data, const InetAddress& addr) const

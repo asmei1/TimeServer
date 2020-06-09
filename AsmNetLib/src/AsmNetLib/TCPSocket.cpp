@@ -3,14 +3,17 @@
 
 using namespace anl;
 
-TCPSocket::TCPSocket(SocketDescription socketDescription)
+TCPSocket::TCPSocket(const SocketDescription& socketDescription)
 {
    this->socketDesc = socketDescription;
 }
 
 TCPSocket::TCPSocket()
 {
-   this->socketDesc = SocketDescription(SocketDescription::SocketType::TCP, IPPROTO_TCP);
+   if(true == socketDesc.isCreated())
+   {
+      closeSocket();
+   }
 }
 
 void TCPSocket::connectTo(const InetAddress& address)

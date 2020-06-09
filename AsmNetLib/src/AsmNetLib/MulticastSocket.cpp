@@ -1,6 +1,5 @@
 #include "MulticastSocket.hpp"
 #include <cassert>
-#include "Helper.hpp"
 #include "InetAddress.hpp"
 #include "Exceptions/DatagramSizeOutOfRangeException.hpp"
 
@@ -9,8 +8,6 @@ using namespace anl;
 
 MulticastSocket::MulticastSocket(const InetAddress& address)
 {
-   this->socketDesc = SocketDescription(SocketDescription::SocketType::UDP, static_cast<IPPROTO>(0));
-
    this->socketDesc.ttlToOne();
    this->socketDesc.disableMulticastLoop();
    this->socketDesc.reusePort();
@@ -41,7 +38,10 @@ void MulticastSocket::recvData(Data& data) const
 
 MulticastSocket::~MulticastSocket()
 {
-   closeSocket();
+   if(true == socketDesc.isCreated())
+   {
+      closeSocket();
+   }
 }
 
 void MulticastSocket::closeSocket()

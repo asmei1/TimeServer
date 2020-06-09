@@ -22,7 +22,7 @@ namespace anl
       InetAddress recvData(Data& data) const;
 
    private:
-      SocketDescription socketDesc;
+      SocketDescription socketDesc{ SocketDescription::SocketType::UDP, IPPROTO_UDP };
    };
 
 }

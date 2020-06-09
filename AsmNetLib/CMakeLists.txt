@@ -22,7 +22,7 @@ set(libinclude
 
 set(libsrc 
    "src/AsmNetLib/AsmNetwork.cpp"
-   "src/AsmNetLib/SocketInternals.cpp"
+   "src/AsmNetLib/SocketDescription.cpp"
    "src/AsmNetLib/MulticastSocket.cpp"
    "src/AsmNetLib/TCPServerSocket.cpp"
    "src/AsmNetLib/TCPSocket.cpp"

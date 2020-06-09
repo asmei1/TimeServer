@@ -10,9 +10,10 @@
 auto inetAddrToInternalStruct(const anl::InetAddress& addr)
 {
    sockaddr_in rV;
+   memset(static_cast<void*>(&rV), 0, sizeof(sockaddr_in));
    rV.sin_family = AF_INET;
    rV.sin_addr.S_un.S_addr = addr.getAddress();
-   rV.sin_port = (addr.getPort());
+   rV.sin_port = htons(addr.getPort());
    return rV;
 }
 
@@ -33,21 +34,14 @@ anl::SocketDescription::SocketDescription(SocketType socketType, IPPROTO protoco
          break;
       default:;
    }
-   this->socketHandler = socket(AF_INET, type, protocol);
+   this->socketHandler = ::socket(AF_INET, type, protocol);
 
-   if(SOCKET_ERROR == socketHandler)
+   if(INVALID_SOCKET == this->socketHandler)
    {
       throw SocketException(WSAGetLastError());
    }
 }
 
-anl::SocketDescription::~SocketDescription()
-{
-   if(true == isCreated())
-   {
-      closeSocket();
-   }
-}
 
 void anl::SocketDescription::enableBroadcast()
 {
@@ -74,6 +68,7 @@ void anl::SocketDescription::bind(const InetAddress& addr)
 void anl::SocketDescription::closeSocket()
 {
    closesocket(this->socketHandler);
+   this->socketHandler = INVALID_SOCKET;
 }
 
 void anl::SocketDescription::sendDatagramTo(const Data& data, const InetAddress& addr) const
@@ -88,11 +83,15 @@ void anl::SocketDescription::sendDatagramTo(const Data& data, const InetAddress&
 
 bool anl::SocketDescription::isCreated() const
 {
-   return this->socketHandler != SOCKET_ERROR;
+   return this->socketHandler != SOCKET_ERROR || this->socketHandler != INVALID_SOCKET;
 }
 
 void anl::SocketDescription::recvDatagramFrom(Data& data, const InetAddress& addr, long timeoutUSec) const
 {
+   if(data.size() == 0)
+   {
+      data.resize(MAX_DATAGRAM_SIZE);
+   }
 
    if(timeoutUSec != -1)
    {
@@ -109,7 +108,7 @@ void anl::SocketDescription::recvDatagramFrom(Data& data, const InetAddress& add
       tv.tv_usec = timeoutUSec;
 
       // Wait until timeout or data received.
-      n = select(this->socketHandler, &fds, NULL, NULL, &tv);
+      n = select(this->socketHandler, &fds, nullptr, nullptr, &tv);
       if(n == 0)
       {
          throw TimeoutException{};
@@ -181,7 +180,8 @@ bool anl::SocketDescription::sendPacketData(const Data& data) const
 void anl::SocketDescription::connectTo(const InetAddress& address)
 {
    auto addrToConnect = inetAddrToInternalStruct(address);
-   int size = sizeof(addrToConnect);
+   //int size = sizeof(decltype(addrToConnect));
+   int size = sizeof(sockaddr_in);
    bool success = 0 <= connect(this->socketHandler, reinterpret_cast<sockaddr*>(&addrToConnect), size);
 
    if(false == success)

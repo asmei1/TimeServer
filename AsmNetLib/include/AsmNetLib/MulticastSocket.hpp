@@ -9,6 +9,7 @@ namespace anl
    class MulticastSocket
    {
    public:
+      MulticastSocket() = default;
       MulticastSocket(const InetAddress& address);
 
       ~MulticastSocket();
@@ -23,7 +24,7 @@ namespace anl
       void joinToGroup(const InetAddress& address);
       void leftFromGroup(const InetAddress& address);
    private:
-      SocketDescription socketDesc;
+      SocketDescription socketDesc{ SocketDescription::SocketType::UDP, IPPROTO_UDP };
    };
 
 }

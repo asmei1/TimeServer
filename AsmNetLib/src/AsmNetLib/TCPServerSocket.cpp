@@ -8,7 +8,6 @@ using namespace anl;
 TCPServerSocket::TCPServerSocket(const InetAddress& address)
 {
    this->portNumber = portNumber;
-   this->socketDesc = SocketDescription(SocketDescription::SocketType::TCP, IPPROTO_TCP);
    this->socketDesc.bind(address);
 }
 
@@ -27,16 +26,18 @@ void TCPServerSocket::startListening()
 
 void TCPServerSocket::stopListening()
 {
-   assert(this->worker && "Start listening, before close it!");
-   //clear flags
-   this->listening = false;
+   if(this->listening)
+   {
+      //clear flags
+      this->listening = false;
 
-   //close socket and listening task
-   this->socketDesc.closeSocket();
-   this->worker->stop();
-   this->listeningThread.join();
-   delete this->worker;
-   this->worker = nullptr;
+      //close socket and listening task
+      this->socketDesc.closeSocket();
+      this->worker->stop();
+      this->listeningThread.join();
+      delete this->worker;
+      this->worker = nullptr;
+   }
 }
 
 void TCPServerSocket::pauseListening()

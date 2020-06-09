@@ -40,7 +40,7 @@ namespace anl
       ClientConnectedHandler clientConnectionHandler;
 
       int portNumber;
-      SocketDescription socketDesc;
+      SocketDescription socketDesc{ SocketDescription::SocketType::TCP, IPPROTO_TCP };
    };
 }
 
