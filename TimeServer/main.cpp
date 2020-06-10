@@ -1,12 +1,12 @@
 ﻿#include <iostream>
 #include "AsmNetLib/AsmNetwork.hpp"
-#include "Server.hpp"
+#include "TimeServer.hpp"
 
 int main()
 {
    if(true == anl::AsmNetwork::initialize())
    {
-      Server server;
+      TimeServer server;
       server.run();
 
       anl::AsmNetwork::cleanup();

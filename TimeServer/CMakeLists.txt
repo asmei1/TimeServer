@@ -2,9 +2,14 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 
 set(includes 
-   "src/Server.hpp"
+   "src/TimeServer.hpp"
+   "src/ClientListenerService.hpp"
+   "src/ClientHandlerTask.hpp"
 )
 set(src
+   "src/TimeServer.cpp"
+   "src/ClientListenerService.cpp"
+   "src/ClientHandlerTask.cpp"
    "main.cpp"
 )
 
