@@ -29,10 +29,10 @@ namespace anl
 
          std::vector<std::string> tokens = ctt::StringTools::split(parseAddress(ip), ".");
          Ip4Address rV;
-         for(int i = 0; i < rV.a.size(); ++i)
-         {
-            rV.a[i] = std::stoi(tokens[i]);
-         }
+         rV.a[0] = std::stoi(tokens[0]);
+         rV.a[1] = std::stoi(tokens[1]);
+         rV.a[2] = std::stoi(tokens[2]);
+         rV.a[3] = std::stoi(tokens[3]);
 
          return rV;
       }
@@ -158,8 +158,6 @@ namespace anl
       {
          return this->address.toString() + std::string(":") + std::to_string(this->port);
       }
-
-
 
 
    private:

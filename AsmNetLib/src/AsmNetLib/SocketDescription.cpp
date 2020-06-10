@@ -11,7 +11,7 @@ auto inetAddrToInternalStruct(const anl::InetAddress& addr)
    sockaddr_in rV;
    memset(static_cast<void*>(&rV), 0, sizeof(sockaddr_in));
    rV.sin_family = AF_INET;
-   rV.sin_addr.S_un.S_addr = addr.getAddress().isAnyAddress() ? ADDR_ANY : addr.getAddress().toUint64();
+   rV.sin_addr.S_un.S_addr = addr.getAddress().isAnyAddress() ? ADDR_ANY : htonl(addr.getAddress().toUint64());
    rV.sin_port = htons(addr.getPort());
    return rV;
 }
@@ -143,7 +143,7 @@ anl::InetAddress anl::SocketDescription::recvAnyDatagram(Data& data) const
    }
 
 
-   return InetAddress(Ip4Address::fromULong(tempAddress.sin_addr.S_un.S_addr), htons(tempAddress.sin_port));
+   return InetAddress(Ip4Address::fromULong(htonl(tempAddress.sin_addr.S_un.S_addr)), htons(tempAddress.sin_port));
 }
 
 void anl::SocketDescription::recvDataFromStream(Data& data, long singlePacketBufferSize) const
