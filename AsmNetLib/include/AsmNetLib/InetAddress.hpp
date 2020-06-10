@@ -1,8 +1,7 @@
 #pragma once
-#include <array>
-#include "NetworkHeaders.hpp"
 #include "Helper.hpp"
 #include "cpptinytools/StringTools.hpp"
+#include <array>
 
 namespace anl
 {
