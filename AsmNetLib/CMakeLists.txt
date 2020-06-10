@@ -4,7 +4,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 configure_file(config.h.in "${CMAKE_CURRENT_BINARY_DIR}/config.h" @ONLY)
 
 set(libinclude 
-   #"include/AsmNetLib/AsmNetLib.hpp"
    "include/AsmNetLib/Types.hpp"
    "include/AsmNetLib/AsmNetwork.hpp"
    "include/AsmNetLib/SocketInternals.hpp"
