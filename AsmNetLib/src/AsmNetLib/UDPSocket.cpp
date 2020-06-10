@@ -5,9 +5,11 @@
 
 using namespace anl;
 
+//TODO: think about it - without bind on socket, we cannot receive any message - (send will bind)
 
 UDPSocket::UDPSocket()
 {
+   this->socketDesc.bind(InetAddress(Ip4Address::anyAddress(), 0));
 } 
 
 UDPSocket::UDPSocket(const InetAddress& address)

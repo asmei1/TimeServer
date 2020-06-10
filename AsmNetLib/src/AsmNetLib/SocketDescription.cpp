@@ -6,13 +6,12 @@
 #include "TimeoutException.hpp"
 #include "InetAddress.hpp"
 
-
 auto inetAddrToInternalStruct(const anl::InetAddress& addr)
 {
    sockaddr_in rV;
    memset(static_cast<void*>(&rV), 0, sizeof(sockaddr_in));
    rV.sin_family = AF_INET;
-   rV.sin_addr.S_un.S_addr = addr.getAddress();
+   rV.sin_addr.S_un.S_addr = addr.getAddress().isAnyAddress() ? ADDR_ANY : addr.getAddress().toUint64();
    rV.sin_port = htons(addr.getPort());
    return rV;
 }
@@ -113,7 +112,8 @@ void anl::SocketDescription::recvDatagramFrom(Data& data, const InetAddress& add
       {
          throw TimeoutException{};
       }
-      else if(n == -1)
+
+      if(n == -1)
       {
          throw SocketException(WSAGetLastError());
       }
@@ -143,7 +143,7 @@ anl::InetAddress anl::SocketDescription::recvAnyDatagram(Data& data) const
    }
 
 
-   return InetAddress(tempAddress.sin_addr.S_un.S_addr, htons(tempAddress.sin_port), tempAddress.sin_family);
+   return InetAddress(Ip4Address::fromULong(tempAddress.sin_addr.S_un.S_addr), htons(tempAddress.sin_port));
 }
 
 void anl::SocketDescription::recvDataFromStream(Data& data, long singlePacketBufferSize) const
@@ -253,7 +253,7 @@ void anl::SocketDescription::setMulticastInterface()
 void anl::SocketDescription::joinToGroup(const InetAddress& address)
 {
    ip_mreq group;
-   group.imr_multiaddr.s_addr = address.getAddress();
+   group.imr_multiaddr.s_addr = address.getAddress().toUint64();
    group.imr_interface.s_addr = this->addr.sin_addr.S_un.S_addr;
 
    if(setsockopt(this->socketHandler, IPPROTO_IP, IP_ADD_MEMBERSHIP, reinterpret_cast<char*>(&group), sizeof(group)) < 0)

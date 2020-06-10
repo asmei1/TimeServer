@@ -8,6 +8,6 @@ namespace anl
 {
    void getLocalInterface(in_addr& localInterface);
 
-   std::string hostNameToIP(const std::string& hostName);
-   std::optional<std::string> parseAddress(const std::string& hostName);
+   const char* hostNameToIP(const char* hostName);
+   const char* parseAddress(const char* hostName);
 }

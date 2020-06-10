@@ -12,16 +12,15 @@ void anl::getLocalInterface(in_addr& localInterface)
    memcpy(&localInterface.s_addr, *he->h_addr_list, 4);
 }
 
-std::string anl::hostNameToIP(const std::string& hostName)
+const char* anl::hostNameToIP(const char* hostName)
 {
-   hostent* he = gethostbyname(hostName.c_str());
-   std::string ip;
+   hostent* he = gethostbyname(hostName);
 
    if(nullptr == he)
    {
-      //gethostbyname failed
       throw WSAGetLastError();
    }
+
    in_addr** addr_list;
    //Cast the h_addr_list to in_addr , since h_addr_list also has the ip address in long format only
    addr_list = reinterpret_cast<in_addr**>(he);
@@ -29,32 +28,30 @@ std::string anl::hostNameToIP(const std::string& hostName)
    if(addr_list[0] != nullptr)
    {
       //Return the first one;
-      ip = inet_ntoa(*addr_list[0]);
+      return inet_ntoa(*addr_list[0]);
    }
-   return ip;
+   return nullptr;
 }
 
-std::optional<std::string> anl::parseAddress(const std::string& hostName)
+const char* anl::parseAddress(const char* hostName)
 {
-   std::string ip = hostName;
-
-   if(false == InetAddress::isIPv4AddrValid(hostName))
+   if(false == Ip4Address::isAddressIsValid(hostName))
    {
       if(hostName == "localhost")
       {
-         ip = "127.0.0.1";
+         return "127.0.0.1";
       }
       else
       {
          try
          {
-            ip = hostNameToIP(hostName);
+            return hostNameToIP(hostName);
          }
          catch(...)
          {
-            return std::nullopt;
+            return nullptr;
          }
       }
    }
-   return ip;
+   return hostName;
 }
