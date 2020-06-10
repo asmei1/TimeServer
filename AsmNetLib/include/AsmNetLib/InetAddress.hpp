@@ -1,113 +1,9 @@
 #pragma once
-#include "Helper.hpp"
 #include "cpptinytools/StringTools.hpp"
-#include <array>
+#include "Ip4Addr.hpp"
 
 namespace anl
 {
-   class Ip4Address
-   {
-      Ip4Address() = default;
-   public:
-      using ipv4ad = std::array<uint8_t, 4>;
-
-
-      ~Ip4Address() = default;
-      Ip4Address(const Ip4Address& other) = default;
-      Ip4Address(Ip4Address&& other) noexcept = default;
-      Ip4Address& operator=(const Ip4Address& other) = default;
-      Ip4Address& operator=(Ip4Address&& other) noexcept = default;
-
-      static std::optional<Ip4Address> fromString(const char* ip)
-      {
-         if(false == isAddressIsValid(ip))
-         {
-            return std::nullopt;
-         }
-
-
-         std::vector<std::string> tokens = ctt::StringTools::split(parseAddress(ip), ".");
-         Ip4Address rV;
-         rV.a[0] = std::stoi(tokens[0]);
-         rV.a[1] = std::stoi(tokens[1]);
-         rV.a[2] = std::stoi(tokens[2]);
-         rV.a[3] = std::stoi(tokens[3]);
-
-         return rV;
-      }
-
-      static Ip4Address fromULong(uint64_t address)
-      {
-         //todo add validation
-         Ip4Address rV;
-         rV.a[0] = static_cast<uint8_t>((address & 0xFF000000) >> 24 );
-         rV.a[1] = static_cast<uint8_t>((address & 0x00FF0000) >> 16);
-         rV.a[2] = static_cast<uint8_t>((address & 0x0000FF00) >> 8);
-         rV.a[3] = static_cast<uint8_t>((address & 0x000000FF) >> 0);
-         return rV;
-      }
-
-      static Ip4Address anyAddress()
-      {
-         Ip4Address rV;
-         rV.any = true;
-         return rV;
-      }
-
-      static bool isAddressIsValid(const char* ip)
-      {
-         // split the std::string into tokens
-         std::vector<std::string> slist = ctt::StringTools::split(ip, ".");
-         // if token size is not equal to four
-         if(slist.size() != 4)
-         {
-            return false;
-         }
-
-         for(const auto& str : slist)
-         {
-            // check that std::string is number, positive, and range
-            if(false == ctt::StringTools::isContainOnlyDigits(str) || std::stoi(str) < 0 || std::stoi(str) > 255)
-            {
-               return false;
-            }
-         }
-         return true;
-      }
-
-      std::string toString() const
-      {
-         std::string rV;
-         for(const auto& oc : a)
-         {
-            rV += std::to_string(oc);
-            rV += ".";
-         }
-         rV.pop_back(); // to remove last dot
-         return rV;
-      }
-
-      uint64_t toUint64() const
-      {
-         uint64_t rV;
-         rV = this->a[0];
-         rV = (rV << 8) + this->a[1];
-         rV = (rV << 8) + this->a[2];
-         rV = (rV << 8) + this->a[3];
-         return rV;
-      }
-
-      bool isAnyAddress() const
-      {
-         return this->any;
-      }
-
-      ipv4ad a;
-   private:
-      bool any = false;
-   };
-
-
    /// <summary>
    /// For now, handle only IPv4 address
    /// </summary>
@@ -115,12 +11,12 @@ namespace anl
    {
    public:
       InetAddress(const char* hostname, uint16_t portNumber)
-         : address(Ip4Address::fromString(hostname).value())
+         : address(Ip4Addr::fromString(hostname).value())
       {
          this->port = portNumber;
       }
 
-      InetAddress(const Ip4Address& host, uint16_t portNumber)
+      InetAddress(const Ip4Addr& host, uint16_t portNumber)
          : address(host)
       {
          this->port = portNumber;
@@ -128,7 +24,7 @@ namespace anl
 
       static InetAddress broadcastAddress(uint16_t port)
       {
-         return InetAddress(Ip4Address::fromString("255.255.255.255").value(), port);
+         return InetAddress(Ip4Addr::fromString("255.255.255.255").value(), port);
       }
 
       //static InetAddress defaultAddress()
@@ -148,7 +44,7 @@ namespace anl
          return this->port;
       }
 
-      Ip4Address getAddress() const
+      Ip4Addr getAddress() const
       {
          return this->address;
       }
@@ -160,7 +56,7 @@ namespace anl
 
 
    private:
-      Ip4Address address;
+      Ip4Addr address;
       uint16_t  port;
    };
 }

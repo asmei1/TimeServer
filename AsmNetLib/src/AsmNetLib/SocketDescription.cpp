@@ -143,7 +143,7 @@ anl::InetAddress anl::SocketDescription::recvAnyDatagram(Data& data) const
    }
 
 
-   return InetAddress(Ip4Address::fromULong(htonl(tempAddress.sin_addr.S_un.S_addr)), htons(tempAddress.sin_port));
+   return InetAddress(Ip4Addr::fromULong(htonl(tempAddress.sin_addr.S_un.S_addr)), htons(tempAddress.sin_port));
 }
 
 void anl::SocketDescription::recvDataFromStream(Data& data, long singlePacketBufferSize) const
