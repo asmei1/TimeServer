@@ -7,6 +7,8 @@ int main()
    if(true == anl::AsmNetwork::initialize())
    {
       TimeServer server;
+      server.initialize();
+      server.printListeners();
       server.run();
 
       anl::AsmNetwork::cleanup();

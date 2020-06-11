@@ -2,13 +2,25 @@
 
 
 #include <iostream>
-
 #include "AsmNetLib/Ip4Addr.hpp"
 
-void TimeServer::run()
+void TimeServer::initialize()
 {
    for(const auto& addr : anl::Ip4Addr::getAllInterfaceAddresses())
    {
-      std::cout << addr.toString() << std::endl;
+      this->listeners.push_back(std::make_unique<ClientListenerService>(addr));
    }
+}
+
+void TimeServer::printListeners() const
+{
+   for(const auto& listener : this->listeners)
+   {
+      std::cout << listener->toString() << std::endl;
+   }
+}
+
+void TimeServer::run()
+{
+   
 }
