@@ -9,8 +9,8 @@ namespace ctt::log
    class BasicLogger : public ILogger
    {
    public:
-      BasicLogger(const std::string& loggingFormat = "[%TIME%] [%LOG_LEVEL%]: ");
-      BasicLogger(const std::string& fileName, const std::string& loggingFormat = "[%TIME%] [%LOG_LEVEL%]: ");
+      explicit BasicLogger(const std::string& loggingFormat = "[%TIME%] [%LOG_LEVEL%]: ");
+      explicit BasicLogger(const std::string& fileName, const std::string& loggingFormat);
 
       ~BasicLogger() override = default;
 

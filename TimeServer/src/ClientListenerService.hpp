@@ -1,6 +1,7 @@
 #pragma once
 #include "AsmNetLib/Ip4Addr.hpp"
 #include "AsmNetLib/TCPServerSocket.hpp"
+#include "cpptinytools/ILogger.hpp"
 
 /// <summary>
 /// Runs on given address and with random port
@@ -8,7 +9,7 @@
 class ClientListenerService
 {
 public:
-   ClientListenerService(const anl::Ip4Addr& addr);
+   ClientListenerService(const ctt::log::ILogger& loggerRef, const anl::Ip4Addr& addr);
    ~ClientListenerService();
 
 
@@ -17,5 +18,6 @@ public:
    std::string toString() const;
 
 private:
+   const ctt::log::ILogger& logger;
    anl::TCPServerSocketUPtr serverSocket;
 };
