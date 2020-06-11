@@ -18,13 +18,17 @@ namespace anl
       void closeSocket();
 
       void connectTo(const InetAddress& address);
-      //bool isConnected() const;
+      bool isConnected() const;
 
       bool sendData(const Data& data) const;
       std::optional<Data> recvData() const;
 
+      InetAddress getSocketAddress() const;
+      std::optional<InetAddress> getConnectedAddress() const;
+
    private:
       SocketDescription socketDesc{ SocketDescription::SocketType::TCP, IPPROTO_TCP };
+      std::optional<InetAddress> addrConnectedTo{std::nullopt};
    };
 
 }

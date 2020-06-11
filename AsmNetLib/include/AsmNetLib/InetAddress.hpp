@@ -27,18 +27,6 @@ namespace anl
          return InetAddress(Ip4Addr::fromString("255.255.255.255").value(), port);
       }
 
-      //static InetAddress defaultAddress()
-      //{
-      //   InetAddress inet{};
-
-      //   inet.addr.sin_family = AF_INET;
-      //   // if the port is specified as zero, the service provider assigns a unique port to the application from the dynamic client port range. On Windows Vista and later, the dynamic client port range is a value between 49152 and 65535. This is a change from Windows Server 2003 and earlier where the dynamic client port range was a value between 1025 and 5000... The application can use getsockname after calling bind to learn the address and the port that has been assigned to the socket.
-      //   inet.addr.sin_port = 0;
-      //   inet.addr.sin_addr.S_un.S_addr = ADDR_ANY;
-
-      //   return inet;
-      //}
-
       int getPort() const
       {
          return this->port;
@@ -54,9 +42,8 @@ namespace anl
          return this->address.toString() + std::string(":") + std::to_string(this->port);
       }
 
-
    private:
       Ip4Addr address;
-      uint16_t  port;
+      uint16_t port;
    };
 }

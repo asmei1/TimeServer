@@ -203,8 +203,7 @@ std::optional<anl::SocketDescription> anl::SocketDescription::accept() const
 {
    sockaddr_in client;
    int size = sizeof(sockaddr_in);
-   SOCKET newSocket;
-   newSocket = ::accept(this->socketHandler, reinterpret_cast<sockaddr*>(&client), &size);
+   SOCKET newSocket = ::accept(this->socketHandler, reinterpret_cast<sockaddr*>(&client), &size);
 
    if(SOCKET_ERROR == newSocket)
    {

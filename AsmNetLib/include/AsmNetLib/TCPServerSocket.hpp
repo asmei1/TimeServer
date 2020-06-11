@@ -25,7 +25,7 @@ namespace anl
       void registerClientConnectedHandler(const ClientConnectedHandler& handler);
 
       InetAddress getAddress() const;
-
+      bool isListening() const;
    private:
       class ClientsListeningTask : public ctt::ResumableTask
       {
