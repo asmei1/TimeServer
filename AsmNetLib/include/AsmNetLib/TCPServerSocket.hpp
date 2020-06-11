@@ -24,6 +24,8 @@ namespace anl
 
       void registerClientConnectedHandler(const ClientConnectedHandler& handler);
 
+      InetAddress getAddress() const;
+
    private:
       class ClientsListeningTask : public ctt::ResumableTask
       {
@@ -39,7 +41,6 @@ namespace anl
       std::atomic_bool listening = false;
       ClientConnectedHandler clientConnectionHandler;
 
-      int portNumber;
       SocketDescription socketDesc{ SocketDescription::SocketType::TCP, IPPROTO_TCP };
    };
 }

@@ -25,6 +25,13 @@ namespace anl
       bool isCreated() const;
       void closeSocket();
 
+      /// <summary>
+      /// This function works properly only for SocketDescription object after bind function.
+      /// TODO: It should works for sockets without bind too, but after send something
+      /// </summary>
+      /// <returns>InetAddress object with ipv4 address and port number</returns>
+      InetAddress toInetAddress() const;
+
       //udp
       void sendDatagramTo(const Data& data, const InetAddress& addr) const;
       void recvDatagramFrom(Data& data, const InetAddress& addr, long timeoutUSec) const;

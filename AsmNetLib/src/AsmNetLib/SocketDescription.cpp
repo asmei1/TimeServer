@@ -57,8 +57,7 @@ void anl::SocketDescription::bind(const InetAddress& addr)
 {
    this->addr = inetAddrToInternalStruct(addr);
 
-   ::bind(this->socketHandler, (sockaddr*)&this->addr, sizeof(this->addr));
-   if(SOCKET_ERROR == this->socketHandler)
+   if(SOCKET_ERROR == ::bind(this->socketHandler, (sockaddr*)&this->addr, sizeof(this->addr)))
    {
       throw BindException(WSAGetLastError());
    }
@@ -68,6 +67,11 @@ void anl::SocketDescription::closeSocket()
 {
    closesocket(this->socketHandler);
    this->socketHandler = INVALID_SOCKET;
+}
+
+anl::InetAddress anl::SocketDescription::toInetAddress() const
+{
+   return InetAddress{ Ip4Addr::fromULong(htonl(this->addr.sin_addr.S_un.S_addr)), htons(this->addr.sin_port) };
 }
 
 void anl::SocketDescription::sendDatagramTo(const Data& data, const InetAddress& addr) const

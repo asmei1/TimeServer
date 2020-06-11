@@ -2,12 +2,10 @@
 #include <cassert>
 
 #include "TCPSocket.hpp"
-#include "Exceptions/BindException.hpp"
 using namespace anl;
 
 TCPServerSocket::TCPServerSocket(const InetAddress& address)
 {
-   this->portNumber = portNumber;
    this->socketDesc.bind(address);
 }
 
@@ -59,6 +57,11 @@ void TCPServerSocket::resumeListening()
 void TCPServerSocket::registerClientConnectedHandler(const ClientConnectedHandler& handler)
 {
    this->clientConnectionHandler = handler;
+}
+
+InetAddress TCPServerSocket::getAddress() const
+{
+   return this->socketDesc.toInetAddress();
 }
 
 void TCPServerSocket::ClientsListeningTask::run()
