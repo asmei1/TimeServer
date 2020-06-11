@@ -10,7 +10,7 @@ public:
    TimeServer(const ctt::log::ILogger& logger);
 
    void initialize();
-   void printListeners() const;
+   void printInfo() const;
    void run();
 
 private:
