@@ -28,33 +28,45 @@ void TimeServer::printInfo() const
    }
 }
 
+void TimeServer::startServices()
+{
+   for(const auto& listener : this->listeners)
+   {
+      listener->run();
+   }
+}
+
 void TimeServer::run()
 {
+   startServices();
 
    while(true)
    {
       std::cout << "Server command line:" << std::endl
-         << "run               Run listening services." << std::endl
+         //<< "run               Run listening services." << std::endl
          << "print             Print all active listener service." << std::endl
+         << "clients           Print all active listener service with clients." << std::endl
          << "close [index]     Close connection at index." << std::endl
+         << "help              Print this help" << std::endl
          << "quit              Close connection and the server." << std::endl;
 
       std::string command;
       std::getline(std::cin, command);
 
       const auto& tokens = ctt::StringTools::split(command, " ");
-
+/*
       if(tokens[0] == "run")
       {
+         startServices();
          this->printInfo();
-         for(const auto& listener : this->listeners)
-         {
-            listener->run();
-         }
       }
-      if(tokens[0] == "print")
+      else */if(tokens[0] == "print")
       {
          this->printInfo();
+      }
+      else if(tokens[0] == "clients")
+      {
+         this->printServicesInfo();
       }
       else if(tokens[0] == "close")
       {
@@ -65,6 +77,23 @@ void TimeServer::run()
       {
          break;
       }
+      else if(tokens[0] == "help")
+      {
+         continue;
+      }
+      else
+      {
+         std::cout << "Wrong command" << std::endl;
+      }
       
+      std::cout << std::endl;
+   }
+}
+
+void TimeServer::printServicesInfo() const
+{
+   for(const auto& service : this->listeners)
+   {
+      service->logInfo();
    }
 }

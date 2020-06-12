@@ -14,6 +14,9 @@ public:
    void run();
 
 private:
+   void printServicesInfo() const;
+   void startServices();
+
    const ctt::log::ILogger& logger;
    std::vector<std::unique_ptr<ClientListenerService>> listeners;
 };

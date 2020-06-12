@@ -26,10 +26,7 @@ ClientListenerService::ClientListenerService(const ctt::log::ILogger& loggerRef,
    }
 
    //initialize handler function for new clients
-   this->serverSocket->registerClientConnectedHandler([this](anl::TCPSocketUPtr newClientSocket)
-      {
-         this->logger.info(newClientSocket->getSocketAddress().toString());
-      });
+   this->serverSocket->registerClientConnectedHandler(std::bind(&ClientListenerService::handleNewClient, this, std::placeholders::_1));
 }
 
 ClientListenerService::~ClientListenerService()
@@ -44,4 +41,46 @@ void ClientListenerService::run()
 std::string ClientListenerService::toString() const
 {
    return this->networkAdapter.getAdapterName() + ": " + this->serverSocket->getAddress().toString();
+}
+
+void ClientListenerService::handleNewClient(anl::TCPSocketUPtr newClientSocket)
+{
+   std::lock_guard(this->clientCrudMutex);
+   this->logger.info("New client connected: " + newClientSocket->getSocketAddress().toString());
+   auto client = std::make_unique<ClientHandler>(this->logger, std::forward<anl::TCPSocketUPtr>(newClientSocket));
+   client->setDisconnectHandler(std::bind(&ClientListenerService::clientDisconnected, this, std::placeholders::_1));
+   this->clients.push_back(std::move(client));
+}
+
+void ClientListenerService::clientDisconnected(ClientHandler* handler)
+{
+   std::lock_guard(this->clientCrudMutex);
+
+   this->logger.info("Client disconnected");
+   this->clients.erase(std::find_if(this->clients.cbegin(), this->clients.cend(),
+      [handler](const auto& ptr) { return handler == ptr.get(); }));
+}
+
+void ClientListenerService::logInfo() const
+{
+   int index = 0;
+   std::string log;
+
+   log += this->toString();
+   log += "\n";
+
+   for(const auto& client : this->clients)
+   {
+      log += "\t";
+      log += "[" + std::to_string(index++) + "] ";
+      log += client->toString();
+      log += "\n";
+   }
+
+   if(true == this->clients.empty())
+   {
+      log += "No clients.\n";
+   }
+
+   this->logger.info(log);
 }

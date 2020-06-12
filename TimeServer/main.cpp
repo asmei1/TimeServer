@@ -14,7 +14,6 @@ int main()
 
       TimeServer server{logger};
       server.initialize();
-      server.printInfo();
       server.run();
 
       anl::AsmNetwork::cleanup();
