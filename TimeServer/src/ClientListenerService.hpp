@@ -1,5 +1,6 @@
 #pragma once
 #include "AsmNetLib/Ip4Addr.hpp"
+#include "AsmNetLib/NetworkAdapter.hpp"
 #include "AsmNetLib/TCPServerSocket.hpp"
 #include "cpptinytools/ILogger.hpp"
 
@@ -9,7 +10,7 @@
 class ClientListenerService
 {
 public:
-   ClientListenerService(const ctt::log::ILogger& loggerRef, const anl::Ip4Addr& addr);
+   ClientListenerService(const ctt::log::ILogger& loggerRef, const anl::NetworkAdapter& adapter);
    ~ClientListenerService();
 
 
@@ -20,4 +21,5 @@ public:
 private:
    const ctt::log::ILogger& logger;
    anl::TCPServerSocketUPtr serverSocket;
+   anl::NetworkAdapter networkAdapter;
 };

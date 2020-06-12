@@ -5,8 +5,8 @@
 #include "AsmNetLib/Exceptions/BindException.hpp"
 #include "AsmNetLib/TCPSocket.hpp"
 
-ClientListenerService::ClientListenerService(const ctt::log::ILogger& loggerRef, const anl::Ip4Addr& addr)
-   : logger(loggerRef)
+ClientListenerService::ClientListenerService(const ctt::log::ILogger& loggerRef, const anl::NetworkAdapter& adapter)
+   : logger(loggerRef), networkAdapter(adapter)
 {
    std::mt19937 engine{ std::random_device{}() };
    const std::uniform_int_distribution<uint16_t> randomPortNumberDistr(49152, 65535);
@@ -16,7 +16,7 @@ ClientListenerService::ClientListenerService(const ctt::log::ILogger& loggerRef,
    {
       try
       {
-         this->serverSocket = std::make_unique<anl::TCPServerSocket>(anl::InetAddress{ addr, randomPortNumberDistr(engine) });
+         this->serverSocket = std::make_unique<anl::TCPServerSocket>(anl::InetAddress{ this->networkAdapter.getAddress(), randomPortNumberDistr(engine) });
          //this->serverSocket = std::make_unique<anl::TCPServerSocket>(anl::InetAddress{ addr, 666});
          break;
       }
@@ -43,5 +43,5 @@ void ClientListenerService::run()
 
 std::string ClientListenerService::toString() const
 {
-   return this->serverSocket->getAddress().toString();
+   return this->networkAdapter.getAdapterName() + ": " + this->serverSocket->getAddress().toString();
 }

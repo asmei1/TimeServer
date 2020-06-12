@@ -61,35 +61,6 @@ bool Ip4Addr::isAddressIsValid(const char* ip)
    return true;
 }
 
-std::vector<anl::Ip4Addr> Ip4Addr::getAllInterfaceAddresses()
-{
-   sockaddr_in* sockaddr_ipv4;
-   addrinfo* result = nullptr;
-   //--------------------------------
-   // Call getaddrinfo(). If the call succeeds,
-   // the result variable will hold a linked list
-   // of addrinfo structures containing response
-   // information
-   std::vector<anl::Ip4Addr> rV;
-   if(0 == getaddrinfo("..localmachine", nullptr, nullptr, &result))
-   {
-      // Retrieve each address 
-      for(auto ptr = result; ptr != NULL; ptr = ptr->ai_next)
-      {
-         switch(ptr->ai_family) {
-            case AF_INET:
-               rV.push_back(anl::Ip4Addr::fromULong(htonl(reinterpret_cast<sockaddr_in*>(ptr->ai_addr)->sin_addr.S_un.S_addr)));
-               break;
-            default:
-               break;
-         }
-      }
-
-      freeaddrinfo(result);
-   }
-   return rV;
-}
-
 std::string Ip4Addr::toString() const
 {
    std::string rV;

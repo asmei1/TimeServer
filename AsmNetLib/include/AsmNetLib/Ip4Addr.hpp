@@ -31,7 +31,6 @@ namespace anl
       static Ip4Addr fromULong(uint64_t address);
       static Ip4Addr anyAddress();
       static bool isAddressIsValid(const char* ip);
-      static std::vector<anl::Ip4Addr> getAllInterfaceAddresses();
 
       ipv4ad a;
    private:

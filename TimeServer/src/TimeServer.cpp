@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-#include "AsmNetLib/Ip4Addr.hpp"
+#include "AsmNetLib/NetworkAdapter.hpp"
 
 TimeServer::TimeServer(const ctt::log::ILogger& loggerRef)
    : logger(loggerRef)
@@ -12,9 +12,9 @@ TimeServer::TimeServer(const ctt::log::ILogger& loggerRef)
 
 void TimeServer::initialize()
 {
-   for(const auto& addr : anl::Ip4Addr::getAllInterfaceAddresses())
+   for(const auto& adapter : anl::NetworkAdapter::getAllInterfaceAddresses())
    {
-      this->listeners.push_back(std::make_unique<ClientListenerService>(this->logger, addr));
+      this->listeners.push_back(std::make_unique<ClientListenerService>(this->logger, adapter));
    }
 }
 
@@ -30,14 +30,11 @@ void TimeServer::printInfo() const
 
 void TimeServer::run()
 {
-   for(const auto& listener : this->listeners)
-   {
-      listener->run();
-   }
 
    while(true)
    {
       std::cout << "Server command line:" << std::endl
+         << "run               Run listening services." << std::endl
          << "print             Print all active listener service." << std::endl
          << "close [index]     Close connection at index." << std::endl
          << "quit              Close connection and the server." << std::endl;
@@ -47,6 +44,14 @@ void TimeServer::run()
 
       const auto& tokens = ctt::StringTools::split(command, " ");
 
+      if(tokens[0] == "run")
+      {
+         this->printInfo();
+         for(const auto& listener : this->listeners)
+         {
+            listener->run();
+         }
+      }
       if(tokens[0] == "print")
       {
          this->printInfo();

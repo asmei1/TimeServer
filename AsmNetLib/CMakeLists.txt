@@ -6,6 +6,7 @@ configure_file(config.h.in "${CMAKE_CURRENT_BINARY_DIR}/config.h" @ONLY)
 set(libinclude 
    "include/AsmNetLib/Types.hpp"
    "include/AsmNetLib/AsmNetwork.hpp"
+   "include/AsmNetLib/NetworkAdapter.hpp"
    "include/AsmNetLib/SocketInternals.hpp"
    "include/AsmNetLib/MulticastSocket.hpp"
    "include/AsmNetLib/UDPSocket.hpp"
@@ -36,7 +37,7 @@ include_directories("include/AsmNetLib", "include/AsmNetLib/Exceptions")
 add_library("AsmNetLib" STATIC ${libsrc})
 set_target_properties("AsmNetLib" PROPERTIES
   #PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/config.h")
-  ${libinclude})
+  PUBLIC_HEADER ${libinclude})
 
   
 if(WIN32)
