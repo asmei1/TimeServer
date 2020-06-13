@@ -1,5 +1,6 @@
 #pragma once
 #include "ClientHandler.hpp"
+#include "DiscoverListener.hpp"
 #include "AsmNetLib/Ip4Addr.hpp"
 #include "AsmNetLib/NetworkAdapter.hpp"
 #include "AsmNetLib/TCPServerSocket.hpp"
@@ -27,7 +28,10 @@ private:
    std::vector<std::unique_ptr<ClientHandler>> clients;
    std::mutex clientCrudMutex;
 
-   const ctt::log::ILogger& logger;
+   std::unique_ptr<DiscoverListener> discovery;
+
    anl::TCPServerSocketUPtr serverSocket;
    anl::NetworkAdapter networkAdapter;
+
+   const ctt::log::ILogger& logger;
 };

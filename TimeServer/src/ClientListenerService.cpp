@@ -27,6 +27,18 @@ ClientListenerService::ClientListenerService(const ctt::log::ILogger& loggerRef,
 
    //initialize handler function for new clients
    this->serverSocket->registerClientConnectedHandler(std::bind(&ClientListenerService::handleNewClient, this, std::placeholders::_1));
+
+
+   try
+   {
+      this->discovery = std::make_unique<DiscoverListener>(logger, this->serverSocket->getAddress().getPort(),
+         anl::InetAddress( networkAdapter.getAddress(), 7 ),
+         anl::InetAddress(anl::Ip4Addr::fromString("224.0.0.10").value(), 7 ));
+   }
+   catch (...)
+   {
+      this->logger.error("Discovery service cannot started on address " + networkAdapter.getAddress().toString());
+   }
 }
 
 ClientListenerService::~ClientListenerService()
@@ -36,6 +48,7 @@ ClientListenerService::~ClientListenerService()
 void ClientListenerService::run()
 {
    this->serverSocket->startListening();
+   this->discovery->startListening();
 }
 
 std::string ClientListenerService::toString() const

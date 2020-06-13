@@ -33,7 +33,6 @@ private:
    };
 
    ClientHandlerTask* task;
-   std::thread handlerThread;
 
    std::function<void(ClientHandler*)> disconnectSignal;
    

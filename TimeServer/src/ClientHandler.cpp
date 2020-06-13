@@ -4,8 +4,8 @@ ClientHandler::ClientHandler(const ctt::log::ILogger& loggerRef, anl::TCPSocketU
    : logger(loggerRef), socket(std::move(clientSocket))
 {
    this->task = new ClientHandlerTask(*this);
-   this->handlerThread = std::thread(&ClientHandlerTask::run, this->task);
-   this->handlerThread.detach();
+   std::thread handlerThread(&ClientHandlerTask::run, this->task);
+   handlerThread.detach();
 }
 
 ClientHandler::~ClientHandler()
@@ -32,6 +32,11 @@ void ClientHandler::ClientHandlerTask::run()
       const auto& data = this->client.socket->recvData();
 
       if(false == data.has_value())
+      {
+         break;
+      }
+
+      if(true == this->stopRequested())
       {
          break;
       }
