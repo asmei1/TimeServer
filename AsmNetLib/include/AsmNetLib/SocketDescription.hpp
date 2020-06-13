@@ -46,7 +46,7 @@ namespace anl
 
       //mutli
       void setMulticastInterface();
-      void joinToGroup(const InetAddress& address);
+      void joinToGroup(const Ip4Addr& address);
 
       //options
       void ttlToOne() const;

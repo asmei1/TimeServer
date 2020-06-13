@@ -33,10 +33,10 @@ Ip4Addr Ip4Addr::fromULong(uint64_t address)
    return rV;
 }
 
-Ip4Addr Ip4Addr::anyAddress()
+Ip4Addr Ip4Addr::any()
 {
    Ip4Addr rV;
-   rV.any = true;
+   rV.a = {};
    return rV;
 }
 
@@ -81,9 +81,4 @@ uint64_t Ip4Addr::toUint64() const
    rV = (rV << 8) + this->a[2];
    rV = (rV << 8) + this->a[3];
    return rV;
-}
-
-bool Ip4Addr::isAnyAddress() const
-{
-   return this->any;
 }

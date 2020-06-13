@@ -24,17 +24,15 @@ namespace anl
       std::string toString() const;
 
       uint64_t toUint64() const;
-      bool isAnyAddress() const;
 
 
       static std::optional<Ip4Addr> fromString(const char* ip);
       static Ip4Addr fromULong(uint64_t address);
-      static Ip4Addr anyAddress();
+      static Ip4Addr any();
       static bool isAddressIsValid(const char* ip);
 
       ipv4ad a;
    private:
-      bool any = false;
    };
 
 
