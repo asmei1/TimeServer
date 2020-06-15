@@ -11,7 +11,7 @@ auto inetAddrToInternalStruct(const anl::InetAddress& addr)
    sockaddr_in rV;
    memset(static_cast<void*>(&rV), 0, sizeof(sockaddr_in));
    rV.sin_family = AF_INET;
-   rV.sin_addr.S_un.S_addr = addr.getAddress().isAnyAddress() ? ADDR_ANY : htonl(addr.getAddress().toUint64());
+   rV.sin_addr.S_un.S_addr = htonl(addr.getAddress().toUint64());
    rV.sin_port = htons(addr.getPort());
    return rV;
 }
@@ -57,8 +57,7 @@ void anl::SocketDescription::bind(const InetAddress& addr)
 {
    this->addr = inetAddrToInternalStruct(addr);
 
-   ::bind(this->socketHandler, (sockaddr*)&this->addr, sizeof(this->addr));
-   if(SOCKET_ERROR == this->socketHandler)
+   if(SOCKET_ERROR == ::bind(this->socketHandler, (sockaddr*)&this->addr, sizeof(this->addr)))
    {
       throw BindException(WSAGetLastError());
    }
@@ -68,6 +67,11 @@ void anl::SocketDescription::closeSocket()
 {
    closesocket(this->socketHandler);
    this->socketHandler = INVALID_SOCKET;
+}
+
+anl::InetAddress anl::SocketDescription::toInetAddress() const
+{
+   return InetAddress{ Ip4Addr::fromULong(htonl(this->addr.sin_addr.S_un.S_addr)), htons(this->addr.sin_port) };
 }
 
 void anl::SocketDescription::sendDatagramTo(const Data& data, const InetAddress& addr) const
@@ -143,7 +147,7 @@ anl::InetAddress anl::SocketDescription::recvAnyDatagram(Data& data) const
    }
 
 
-   return InetAddress(Ip4Address::fromULong(htonl(tempAddress.sin_addr.S_un.S_addr)), htons(tempAddress.sin_port));
+   return InetAddress(Ip4Addr::fromULong(htonl(tempAddress.sin_addr.S_un.S_addr)), htons(tempAddress.sin_port));
 }
 
 void anl::SocketDescription::recvDataFromStream(Data& data, long singlePacketBufferSize) const
@@ -199,8 +203,7 @@ std::optional<anl::SocketDescription> anl::SocketDescription::accept() const
 {
    sockaddr_in client;
    int size = sizeof(sockaddr_in);
-   SOCKET newSocket;
-   newSocket = ::accept(this->socketHandler, reinterpret_cast<sockaddr*>(&client), &size);
+   SOCKET newSocket = ::accept(this->socketHandler, reinterpret_cast<sockaddr*>(&client), &size);
 
    if(SOCKET_ERROR == newSocket)
    {
@@ -250,11 +253,11 @@ void anl::SocketDescription::setMulticastInterface()
    }
 }
 
-void anl::SocketDescription::joinToGroup(const InetAddress& address)
+void anl::SocketDescription::joinToGroup(const Ip4Addr& address)
 {
    ip_mreq group;
-   group.imr_multiaddr.s_addr = address.getAddress().toUint64();
-   group.imr_interface.s_addr = this->addr.sin_addr.S_un.S_addr;
+   group.imr_multiaddr.s_addr = htonl(address.toUint64());
+   group.imr_interface.s_addr = htonl(anl::Ip4Addr::any().toUint64());
 
    if(setsockopt(this->socketHandler, IPPROTO_IP, IP_ADD_MEMBERSHIP, reinterpret_cast<char*>(&group), sizeof(group)) < 0)
    {

@@ -9,9 +9,9 @@ using namespace anl;
 MulticastSocket::MulticastSocket(const InetAddress& address)
 {
    this->socketDesc.ttlToOne();
-   this->socketDesc.disableMulticastLoop();
    this->socketDesc.reusePort();
 
+   this->bind(address);
    this->socketDesc.setMulticastInterface();
 }
 
@@ -31,9 +31,9 @@ void MulticastSocket::sendData(const Data& data, const InetAddress& address) con
    this->socketDesc.sendDatagramTo(data, address);
 }
 
-void MulticastSocket::recvData(Data& data) const
+InetAddress MulticastSocket::recvData(Data& data) const
 {
-   this->socketDesc.recvDataFromStream(data, RECV_BUFFER_SIZE);
+   return this->socketDesc.recvAnyDatagram(data);
 }
 
 MulticastSocket::~MulticastSocket()
@@ -49,12 +49,17 @@ void MulticastSocket::closeSocket()
    this->socketDesc.closeSocket();
 }
 
-void MulticastSocket::joinToGroup(const InetAddress& address)
+void MulticastSocket::disableMulticastLoop() const
+{
+   this->socketDesc.disableMulticastLoop();
+}
+
+void MulticastSocket::joinToGroup(const Ip4Addr& address)
 {
    this->socketDesc.joinToGroup(address);
 }
 
-void MulticastSocket::leftFromGroup(const InetAddress& address)
+void MulticastSocket::leftFromGroup(const Ip4Addr& address)
 {
    assert(false && "To implement");
 }

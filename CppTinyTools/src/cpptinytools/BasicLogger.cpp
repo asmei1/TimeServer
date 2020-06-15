@@ -8,7 +8,7 @@
 #include <thread>
 #include "StringTools.hpp"
 
-using namespace ctt::logging;
+using namespace ctt::log;
 
 BasicLogger::BasicLogger(const std::string& loggingFormat)
    : ILogger(loggingFormat), enableLoggingToFile(false)

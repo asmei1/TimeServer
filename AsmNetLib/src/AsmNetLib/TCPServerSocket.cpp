@@ -2,12 +2,10 @@
 #include <cassert>
 
 #include "TCPSocket.hpp"
-#include "Exceptions/BindException.hpp"
 using namespace anl;
 
 TCPServerSocket::TCPServerSocket(const InetAddress& address)
 {
-   this->portNumber = portNumber;
    this->socketDesc.bind(address);
 }
 
@@ -21,18 +19,18 @@ void TCPServerSocket::startListening()
    //create task to listening
    this->worker = new ClientsListeningTask(this);
    this->listeningThread = std::thread(&ctt::StoppableTask::run, this->worker);
+   this->listening = true;
 }
-
 
 void TCPServerSocket::stopListening()
 {
-   if(this->listening)
+   //close socket and listening task
+   this->socketDesc.closeSocket();
+   if(true == this->listening && true == this->listeningThread.joinable())
    {
       //clear flags
       this->listening = false;
 
-      //close socket and listening task
-      this->socketDesc.closeSocket();
       this->worker->stop();
       this->listeningThread.join();
       delete this->worker;
@@ -61,8 +59,19 @@ void TCPServerSocket::registerClientConnectedHandler(const ClientConnectedHandle
    this->clientConnectionHandler = handler;
 }
 
+InetAddress TCPServerSocket::getAddress() const
+{
+   return this->socketDesc.toInetAddress();
+}
+
+bool TCPServerSocket::isListening() const
+{
+   return this->isListening();
+}
+
 void TCPServerSocket::ClientsListeningTask::run()
 {
+   this->socket->socketDesc.listen();
    while(true)
    {
       this->waitIfPaused();
@@ -82,6 +91,8 @@ void TCPServerSocket::ClientsListeningTask::run()
       }
 
       //if everything is okey, execute callback function
-      this->socket->clientConnectionHandler(TCPSocketUPtr(new TCPSocket(socket.value())));
+      auto newSocket = TCPSocketUPtr(new TCPSocket(socket.value()));
+      newSocket->addrConnectedTo = this->socket->getAddress();
+      this->socket->clientConnectionHandler(std::move(newSocket));
    }
 }

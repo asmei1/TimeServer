@@ -5,6 +5,7 @@ project ("NTProject")
 # Include sub-projects.
 add_subdirectory ("AsmNetLib")
 add_subdirectory ("CppTinyTools")
+add_subdirectory ("TimeProtocol")
 add_subdirectory ("TimeServer")
 add_subdirectory ("TimeClient")
 

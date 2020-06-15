@@ -1,37 +1,5 @@
 #include "Helper.hpp"
-#include <winsock2.h>
 #include "InetAddress.hpp"
-#include "cpptinytools/StringTools.hpp"
-
-
-std::vector<anl::Ip4Address> getAllInterfaceAddresses()
-{
-   sockaddr_in* sockaddr_ipv4;
-   addrinfo* result = NULL;
-   //--------------------------------
-   // Call getaddrinfo(). If the call succeeds,
-   // the result variable will hold a linked list
-   // of addrinfo structures containing response
-   // information
-   std::vector<anl::Ip4Address> rV;
-   if(0 == getaddrinfo("..localmachine", nullptr, nullptr, &result))
-   {
-      // Retrieve each address 
-      for(auto ptr = result; ptr != NULL; ptr = ptr->ai_next)
-      {
-         switch(ptr->ai_family) {
-            case AF_INET:
-               rV.push_back(anl::Ip4Address::fromULong(htonl(reinterpret_cast<sockaddr_in*>(ptr->ai_addr)->sin_addr.S_un.S_addr)));
-               break;
-            default:
-               break;
-         }
-      }
-
-      freeaddrinfo(result);
-   }
-   return rV;
-}
 
 void anl::getLocalInterface(in_addr& localInterface)
 {
@@ -65,7 +33,7 @@ const char* anl::hostNameToIP(const char* hostName)
 
 const char* anl::parseAddress(const char* hostName)
 {
-   if(false == Ip4Address::isAddressIsValid(hostName))
+   if(false == Ip4Addr::isAddressIsValid(hostName))
    {
       if(hostName == "localhost")
       {

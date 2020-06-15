@@ -9,7 +9,7 @@ using namespace anl;
 
 UDPSocket::UDPSocket()
 {
-   this->socketDesc.bind(InetAddress(Ip4Address::anyAddress(), 0));
+   this->socketDesc.bind(InetAddress(Ip4Addr::any(), 0));
 } 
 
 UDPSocket::UDPSocket(const InetAddress& address)

@@ -17,12 +17,14 @@ namespace anl
 
       void closeSocket();
 
+      void disableMulticastLoop() const;
+
       void bind(const InetAddress& address);
       void sendData(const Data& data, const InetAddress& address) const;
-      void recvData(Data& data) const;
+      InetAddress recvData(Data& data) const;
 
-      void joinToGroup(const InetAddress& address);
-      void leftFromGroup(const InetAddress& address);
+      void joinToGroup(const Ip4Addr& address);
+      void leftFromGroup(const Ip4Addr& address);
    private:
       SocketDescription socketDesc{ SocketDescription::SocketType::UDP, IPPROTO_UDP };
    };
