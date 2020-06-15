@@ -1,4 +1,6 @@
 #pragma once
+#include <optional>
+
 #include "AsmNetLib/Types.hpp"
 
 class TimeProtocol
@@ -18,9 +20,12 @@ public:
    };
 
 
+   //parse
    static Command parseBuffer(const anl::Data& data);
+   static std::optional<anl::InetAddress> parseOfferAddress(const anl::Data& data);
 
-   
-   static inline const std::string DISCOVERY_COMMAND_STR = "DISCOVERY";
-   static inline const anl::Data DISCOVERY_COMMAND = { DISCOVERY_COMMAND_STR.begin(), DISCOVERY_COMMAND_STR.end() };
+   //make functions
+   static anl::Data makeDiscoveryCmd();
+   static anl::Data makeOfferCmd(const anl::InetAddress& address);
+
 };
