@@ -26,8 +26,7 @@ void DiscoverListener::startListening()
 
 void DiscoverListener::DiscoverTask::run()
 {
-   const std::string command = "OFFER ADDRESS " + this->listener->socketAddress.toString();
-   const anl::Data toSend = { command.begin(), command.end() };
+   const auto& toSend = TimeProtocol::makeOfferCmd(this->listener->socketAddress);
    while(true)
    {
       anl::Data data;

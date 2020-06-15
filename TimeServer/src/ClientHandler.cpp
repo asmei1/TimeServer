@@ -1,5 +1,7 @@
 #include "ClientHandler.hpp"
 
+#include "TimeProtocol.hpp"
+
 ClientHandler::ClientHandler(const ctt::log::ILogger& loggerRef, anl::TCPSocketUPtr clientSocket)
    : logger(loggerRef), socket(std::move(clientSocket))
 {
@@ -35,6 +37,22 @@ void ClientHandler::ClientHandlerTask::run()
       {
          break;
       }
+
+      if(TimeProtocol::GET_SERVER_TIME == TimeProtocol::parseBuffer(data.value()))
+      {
+         this->client.socket->sendData(
+            TimeProtocol::makeGetServerTimeCmd(
+               std::chrono::duration_cast<std::chrono::milliseconds>(
+                  std::chrono::system_clock::now()
+                  .time_since_epoch()).count()
+            )
+         );
+      }
+      else
+      {
+         this->client.logger.warning("Client handler get a invalid command: " + std::string{ data.value().begin(), data.value().end() });
+      }
+
 
       if(true == this->stopRequested())
       {
