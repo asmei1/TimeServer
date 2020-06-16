@@ -1,30 +1,24 @@
-﻿#include <iostream>
+﻿#include "TimeClient.hpp"
 #include "AsmNetLib/AsmNetwork.hpp"
-#include "AsmNetLib/TCPSocket.hpp"
-#include "AsmNetLib/Exceptions/SocketException.hpp"
+#include "cpptinytools/BasicLogger.hpp"
+#include "cpptinytools/ILogger.hpp"
 
 int main()
 {
-   anl::AsmNetwork::initialize();
-   try
+   ctt::log::BasicLogger logger{ "[%TIME%]: " };
+
+   if(true == anl::AsmNetwork::initialize())
    {
-      const std::string data = "THIS DATA WAS SENT";
-      anl::TCPSocket testSocket;
-      testSocket.connectTo({ "192.168.88.247", 666 });
-      testSocket.sendData({ data.cbegin(), data.cend() });
+      logger.info("Initialized Winsock library...");
 
-      const auto& rec = testSocket.recvData();
+      TimeClient client{ logger };
+      client.run();
 
-      std::cout << (rec ? std::string{ rec.value().cbegin(), rec.value().cend() } : "error") << std::endl;
+      anl::AsmNetwork::cleanup();
+      logger.info("Cleanup...");
 
-      testSocket.closeSocket();
-   }
-   catch( anl::SocketException e )
-   {
-      std::cout << "Something went not too good";
+      return 0;
    }
 
-
-   anl::AsmNetwork::cleanup();
-   return 0;
+   return -1;
 }

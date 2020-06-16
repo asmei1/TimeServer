@@ -2,14 +2,14 @@
 #include <string>
 #include <array>
 
-namespace ctt::logging
+namespace ctt::log
 {
    class ILogger
    {
    public:
       /**
        * \brief Initialize logger and set log format message. Allowed tags: %TIME%, %LOG_LEVEL%, %THREAD_ID%.
-       * \param loggingFormat Format of logging message. If loggingFormat will be empty, log message will be logged without any additional info.
+       * \param loggingFormat Format of log message. If loggingFormat will be empty, log message will be logged without any additional info.
        *                      Example: [%TIME%] [%LOG_LEVEL%] [%THREAD_ID%]
        */
       ILogger(const std::string& loggingFormat)
@@ -47,7 +47,7 @@ namespace ctt::logging
          this->dateTimeFormat = dateTimeFormat;
       }
 
-      void info(const std::string& msg)
+      void info(const std::string& msg) const
       {
          if(true == this->levelsLoggingPermission[static_cast<int>(ILogger::Level::INFO)])
          {
@@ -55,7 +55,7 @@ namespace ctt::logging
          }
       }
 
-      void warning(const std::string& msg)
+      void warning(const std::string& msg) const 
       {
          if(true == this->levelsLoggingPermission[static_cast<int>(ILogger::Level::WARNING)])
          {
@@ -63,7 +63,7 @@ namespace ctt::logging
          }
       }
 
-      void error(const std::string& msg)
+      void error(const std::string& msg) const
       {
          if(true == this->levelsLoggingPermission[static_cast<int>(ILogger::Level::ERR)])
          {
@@ -71,7 +71,7 @@ namespace ctt::logging
          }
       }
 
-      void debug(const std::string& msg)
+      void debug(const std::string& msg) const
       {
          if(true == this->levelsLoggingPermission[static_cast<int>(ILogger::Level::DEBUG)])
          {
@@ -79,7 +79,7 @@ namespace ctt::logging
          }
       }
 
-      void trace(const std::string& msg)
+      void trace(const std::string& msg) const
       {
          if(true == this->levelsLoggingPermission[static_cast<int>(ILogger::Level::TRACE)])
          {

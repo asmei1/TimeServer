@@ -6,12 +6,14 @@ configure_file(config.h.in "${CMAKE_CURRENT_BINARY_DIR}/config.h" @ONLY)
 set(libinclude 
    "include/AsmNetLib/Types.hpp"
    "include/AsmNetLib/AsmNetwork.hpp"
+   "include/AsmNetLib/NetworkAdapter.hpp"
    "include/AsmNetLib/SocketInternals.hpp"
    "include/AsmNetLib/MulticastSocket.hpp"
    "include/AsmNetLib/UDPSocket.hpp"
    "include/AsmNetLib/TCPSocket.hpp"
    "include/AsmNetLib/TCPServerSocket.hpp"
-   "include/AsmNetLib/InetAddress.hpp"
+   "include/AsmNetLib/InetAddress.hpp" 
+   "include/AsmNetLib/Ip4Addr.hpp" 
    "include/AsmNetLib/Exceptions/SocketException.hpp"
    "include/AsmNetLib/Exceptions/BindException.hpp"
    "include/AsmNetLib/Exceptions/SocketCreateException.hpp"
@@ -22,6 +24,7 @@ set(libinclude
 set(libsrc 
    "src/AsmNetLib/AsmNetwork.cpp"
    "src/AsmNetLib/SocketDescription.cpp"
+   "src/AsmNetLib/Ip4Addr.cpp"
    "src/AsmNetLib/MulticastSocket.cpp"
    "src/AsmNetLib/TCPServerSocket.cpp"
    "src/AsmNetLib/TCPSocket.cpp"

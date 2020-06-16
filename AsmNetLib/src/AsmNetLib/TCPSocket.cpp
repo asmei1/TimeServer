@@ -10,15 +10,17 @@ TCPSocket::TCPSocket(const SocketDescription& socketDescription)
 
 TCPSocket::TCPSocket()
 {
-   if(true == socketDesc.isCreated())
-   {
-      closeSocket();
-   }
 }
 
 void TCPSocket::connectTo(const InetAddress& address)
 {
    this->socketDesc.connectTo(address);
+   this->addrConnectedTo = address;
+}
+
+bool TCPSocket::isConnected() const
+{
+   return this->getConnectedAddress().has_value();
 }
 
 void TCPSocket::closeSocket()
@@ -42,6 +44,16 @@ std::optional<Data> TCPSocket::recvData() const
    {
       return std::nullopt;
    }
+}
+
+InetAddress TCPSocket::getSocketAddress() const
+{
+   return this->socketDesc.toInetAddress();
+}
+
+std::optional<InetAddress> TCPSocket::getConnectedAddress() const
+{
+   return this->addrConnectedTo;
 }
 
 TCPSocket::~TCPSocket()
