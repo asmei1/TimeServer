@@ -33,11 +33,12 @@ void DiscoverListener::DiscoverTask::run()
       anl::Data data;
       try
       {
+
          auto recvAddress = this->listener->socket.recvData(data);
          if(TimeProtocol::Command::DISCOVERY == TimeProtocol::parseBuffer(data))
          {
             //resend packet with server address
-            anl::UDPSocket().sendData(toSend, recvAddress);
+            anl::UDPSocket({ this->listener->socketAddress.getAddress(), 0}).sendData(toSend, recvAddress);
          }
          else
          {
