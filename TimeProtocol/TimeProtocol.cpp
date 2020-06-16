@@ -11,12 +11,13 @@ const anl::Data discoveryCmd = { discoveryCmdStr.begin(), discoveryCmdStr.end() 
 
 TimeProtocol::Command TimeProtocol::parseBuffer(const anl::Data& data)
 {
-   std::string command = std::string{ data.begin(), data.end() };
-   command.erase(std::find(command.begin(), command.end(), '\0'), command.end());
-
-   if(command == "DISCOVERY")
+   if(true == std::equal(data.begin(), data.begin() + discoveryCmdStr.size(), discoveryCmdStr.begin(), discoveryCmdStr.end()))
    {
       return Command::DISCOVERY;
+   }
+   else if(true == std::equal(data.begin(), data.begin() + offerCmdStr.size(), offerCmdStr.begin(), offerCmdStr.end()))
+   {
+      return Command::SEND_OFFER;
    }
 
 
@@ -39,7 +40,7 @@ std::optional<anl::InetAddress> TimeProtocol::parseOfferAddress(const anl::Data&
 
          if(true == optIp.has_value())
          {
-            anl::InetAddress address{ optIp.value(), std::stoi(tokens[1]) };
+            rV = anl::InetAddress( optIp.value(), std::stoi(tokens[1]) );
          }
       }
    }

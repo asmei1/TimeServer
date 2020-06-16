@@ -57,7 +57,7 @@ void TimeServer::run()
 
       if(tokens[0] == "run")
       {
-         if(true == running)
+         if(false == running)
          {
             startServices();
             this->printInfo();

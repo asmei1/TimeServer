@@ -26,7 +26,8 @@ void DiscoverListener::startListening()
 
 void DiscoverListener::DiscoverTask::run()
 {
-   const auto& toSend = TimeProtocol::makeOfferCmd(this->listener->socketAddress);
+   //prepare packet with proper address and port
+   const auto& toSend = TimeProtocol::makeOfferCmd({ this->listener->socketAddress.getAddress(), this->listener->servicePortNumber });
    while(true)
    {
       anl::Data data;
@@ -35,6 +36,7 @@ void DiscoverListener::DiscoverTask::run()
          auto recvAddress = this->listener->socket.recvData(data);
          if(TimeProtocol::Command::DISCOVERY == TimeProtocol::parseBuffer(data))
          {
+            //resend packet with server address
             anl::UDPSocket().sendData(toSend, recvAddress);
          }
          else
