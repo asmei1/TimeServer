@@ -12,7 +12,7 @@ int main()
    {
       logger.info("Initialized Winsock library...");
 
-      TimeServer server{logger};
+      TimeServer server{ logger };
       server.initialize();
       server.run();
 

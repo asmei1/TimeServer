@@ -18,6 +18,7 @@ public:
       DISCOVERY,
       SEND_OFFER,
       GET_SERVER_TIME,
+      SEND_SERVER_TIME,
       INVALID
    };
 
@@ -29,6 +30,7 @@ public:
 
    //make functions
    static anl::Data makeDiscoveryCmd();
+   static anl::Data makeGetServerTimeCmd();
    static anl::Data makeOfferCmd(const anl::InetAddress& address);
-   static anl::Data makeGetServerTimeCmd(uint64_t ms);
+   static anl::Data makeSendServerTimeCmd(uint64_t ms);
 };

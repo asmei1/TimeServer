@@ -17,7 +17,6 @@ ClientListenerService::ClientListenerService(const ctt::log::ILogger& loggerRef,
       try
       {
          this->serverSocket = std::make_unique<anl::TCPServerSocket>(anl::InetAddress{ this->networkAdapter.getAddress(), randomPortNumberDistr(engine) });
-         //this->serverSocket = std::make_unique<anl::TCPServerSocket>(anl::InetAddress{ addr, 666});
          break;
       }
       catch(anl::BindException& e)

@@ -41,7 +41,7 @@ void ClientHandler::ClientHandlerTask::run()
       if(TimeProtocol::GET_SERVER_TIME == TimeProtocol::parseBuffer(data.value()))
       {
          this->client.socket->sendData(
-            TimeProtocol::makeGetServerTimeCmd(
+            TimeProtocol::makeSendServerTimeCmd(
                std::chrono::duration_cast<std::chrono::milliseconds>(
                   std::chrono::system_clock::now()
                   .time_since_epoch()).count()
@@ -59,7 +59,7 @@ void ClientHandler::ClientHandlerTask::run()
          break;
       }
 
-      this->client.logger.info({ data.value().begin(), data.value().end() });
+      //this->client.logger.info({ data.value().begin(), data.value().end() });
    }
 
    this->client.disconnectSignal(&this->client);
