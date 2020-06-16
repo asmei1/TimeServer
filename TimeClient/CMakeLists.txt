@@ -3,11 +3,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 
 set(includes 
    "src/TimeClient.hpp" 
+   "src/SearchServerTask.hpp" 
 )
 
 set(src
    "main.cpp"
    "src/TimeClient.cpp"
+   "src/SearchServerTask.cpp"
 )
 
 
