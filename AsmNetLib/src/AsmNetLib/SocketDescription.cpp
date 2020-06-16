@@ -257,7 +257,7 @@ void anl::SocketDescription::joinToGroup(const Ip4Addr& address)
 {
    ip_mreq group;
    group.imr_multiaddr.s_addr = htonl(address.toUint64());
-   group.imr_interface.s_addr = htonl(anl::Ip4Addr::any().toUint64());
+   group.imr_interface.s_addr = this->addr.sin_addr.s_addr;
 
    if(setsockopt(this->socketHandler, IPPROTO_IP, IP_ADD_MEMBERSHIP, reinterpret_cast<char*>(&group), sizeof(group)) < 0)
    {

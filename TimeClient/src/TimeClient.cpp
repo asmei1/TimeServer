@@ -51,6 +51,8 @@ void TimeClient::run()
                this->connected = false;
                this->discoverService.resume();
                this->syncTimeService.disconnect();
+               std::lock_guard(this->mutexForAddresses);
+               this->discoveredAddresses.clear();
             }
             else
             {
@@ -195,7 +197,7 @@ void TimeClient::DiscoveryService::run()
             if(false == this->client.connected)
             {
                int index = 0;
-               for(const auto& addr : task.getServerAddresses(std::chrono::milliseconds(1000)))
+               for(const auto& addr : this->client.discoveredAddresses)
                {
                   //mark last connected to address
                   if(true == this->client.lastServerAddress.has_value() && addr == this->client.lastServerAddress.value())

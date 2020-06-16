@@ -6,6 +6,12 @@
 using namespace anl;
 
 
+MulticastSocket::MulticastSocket()
+{
+   this->socketDesc.ttlToOne();
+   this->socketDesc.reusePort(); 
+}
+
 MulticastSocket::MulticastSocket(const InetAddress& address)
 {
    this->socketDesc.ttlToOne();

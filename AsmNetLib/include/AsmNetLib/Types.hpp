@@ -13,6 +13,7 @@ namespace anl
    using Data = std::vector<char>;
 
    using MulticastSocketUPtr = std::unique_ptr<MulticastSocket>;
+   using MulticastSocketSPtr = std::shared_ptr<MulticastSocket>;
 
    using UDPSocketUPtr = std::unique_ptr<UDPSocket>;
    using UDPSocketSPtr = std::shared_ptr<UDPSocket>;
