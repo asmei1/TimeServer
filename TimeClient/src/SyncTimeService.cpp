@@ -79,6 +79,7 @@ void SyncTimeService::run(const std::chrono::milliseconds& frequency)
          }
          else
          {
+            this->logger.info("Server disconnected");
             break;
          }
 
@@ -86,7 +87,6 @@ void SyncTimeService::run(const std::chrono::milliseconds& frequency)
          std::this_thread::sleep_for(frequency);
       }
 
-      this->logger.info("Server disconnected");
 
       }).detach();
 }

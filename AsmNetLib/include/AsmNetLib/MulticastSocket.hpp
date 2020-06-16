@@ -9,7 +9,7 @@ namespace anl
    class MulticastSocket
    {
    public:
-      MulticastSocket() = default;
+      MulticastSocket();
       MulticastSocket(const InetAddress& address);
 
       ~MulticastSocket();
