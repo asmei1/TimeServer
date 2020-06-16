@@ -10,10 +10,6 @@ TCPSocket::TCPSocket(const SocketDescription& socketDescription)
 
 TCPSocket::TCPSocket()
 {
-   if(true == socketDesc.isCreated())
-   {
-      closeSocket();
-   }
 }
 
 void TCPSocket::connectTo(const InetAddress& address)
