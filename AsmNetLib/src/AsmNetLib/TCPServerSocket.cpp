@@ -66,7 +66,7 @@ InetAddress TCPServerSocket::getAddress() const
 
 bool TCPServerSocket::isListening() const
 {
-   return this->isListening();
+   return this->listening;
 }
 
 void TCPServerSocket::ClientsListeningTask::run()
