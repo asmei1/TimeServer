@@ -21,6 +21,16 @@ namespace anl
       Ip4Addr& operator=(Ip4Addr&& other) noexcept = default;
 
 
+      friend bool operator==(const Ip4Addr& lhs, const Ip4Addr& rhs)
+      {
+         return lhs.a == rhs.a;
+      }
+
+      friend bool operator!=(const Ip4Addr& lhs, const Ip4Addr& rhs)
+      {
+         return !(lhs == rhs);
+      }
+
       std::string toString() const;
 
       uint64_t toUint64() const;

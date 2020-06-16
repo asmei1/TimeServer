@@ -42,6 +42,18 @@ namespace anl
          return this->address.toString() + std::string(":") + std::to_string(this->port);
       }
 
+
+      friend bool operator==(const InetAddress& lhs, const InetAddress& rhs)
+      {
+         return lhs.address == rhs.address
+            && lhs.port == rhs.port;
+      }
+
+      friend bool operator!=(const InetAddress& lhs, const InetAddress& rhs)
+      {
+         return !(lhs == rhs);
+      }
+
    private:
       Ip4Addr address;
       uint16_t port;

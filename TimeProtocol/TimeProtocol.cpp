@@ -5,18 +5,29 @@
 
 const std::string discoveryCmdStr = "DISCOVERY";
 const std::string offerCmdStr = "OFFER ADDRESS ";
-const std::string getServerTimeCmdStr = "SERVER TIME ";
+const std::string sendServerTimeCmdStr = "SERVER TIME ";
+const std::string getServerTimeCmdStr = "GET SERVER TIME ";
 
 const anl::Data discoveryCmd = { discoveryCmdStr.begin(), discoveryCmdStr.end() };
+const anl::Data getServerTimeCmd = { getServerTimeCmdStr.begin(), getServerTimeCmdStr.end() };
 
 TimeProtocol::Command TimeProtocol::parseBuffer(const anl::Data& data)
 {
-   std::string command = std::string{ data.begin(), data.end() };
-   command.erase(std::find(command.begin(), command.end(), '\0'), command.end());
-
-   if(command == "DISCOVERY")
+   if(true == std::equal(data.begin(), data.begin() + discoveryCmdStr.size(), discoveryCmdStr.begin(), discoveryCmdStr.end()))
    {
       return Command::DISCOVERY;
+   }
+   else if(true == std::equal(data.begin(), data.begin() + offerCmdStr.size(), offerCmdStr.begin(), offerCmdStr.end()))
+   {
+      return Command::SEND_OFFER;
+   }
+   else if(true == std::equal(data.begin(), data.begin() + getServerTimeCmdStr.size(), getServerTimeCmdStr.begin(), getServerTimeCmdStr.end()))
+   {
+      return Command::GET_SERVER_TIME;
+   }
+   else if(true == std::equal(data.begin(), data.begin() + sendServerTimeCmdStr.size(), sendServerTimeCmdStr.begin(), sendServerTimeCmdStr.end()))
+   {
+      return Command::SEND_SERVER_TIME;
    }
 
 
@@ -39,7 +50,7 @@ std::optional<anl::InetAddress> TimeProtocol::parseOfferAddress(const anl::Data&
 
          if(true == optIp.has_value())
          {
-            anl::InetAddress address{ optIp.value(), std::stoi(tokens[1]) };
+            rV = anl::InetAddress( optIp.value(), std::stoi(tokens[1]) );
          }
       }
    }
@@ -51,9 +62,9 @@ uint64_t TimeProtocol::parseTimeFromServer(const anl::Data& data)
 {
    uint64_t ms = 0;
 
-   if(data.size() > getServerTimeCmdStr.size())
+   if(data.size() > sendServerTimeCmdStr.size())
    {
-      std::string command = std::string{ data.begin() + getServerTimeCmdStr.size(), data.end() };
+      std::string command = std::string{ data.begin() + sendServerTimeCmdStr.size(), data.end() };
       command.erase(std::find(command.begin(), command.end(), '\0'), command.end());
 
       ms = std::stoll(command);
@@ -67,6 +78,11 @@ anl::Data TimeProtocol::makeDiscoveryCmd()
    return discoveryCmd;
 }
 
+anl::Data TimeProtocol::makeGetServerTimeCmd()
+{
+   return getServerTimeCmd;
+}
+
 anl::Data TimeProtocol::makeOfferCmd(const anl::InetAddress& address)
 {
    const std::string temp = offerCmdStr + address.toString();
@@ -74,9 +90,9 @@ anl::Data TimeProtocol::makeOfferCmd(const anl::InetAddress& address)
    return offerCmd;
 }
 
-anl::Data TimeProtocol::makeGetServerTimeCmd(uint64_t ms)
+anl::Data TimeProtocol::makeSendServerTimeCmd(uint64_t ms)
 {
-   const std::string temp = offerCmdStr + std::to_string(ms);
+   const std::string temp = sendServerTimeCmdStr + std::to_string(ms);
    const anl::Data cmd = { temp.begin(), temp.end() };
    return cmd;
 
