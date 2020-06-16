@@ -23,7 +23,14 @@ std::vector<anl::InetAddress> SearchServerTask::getServerAddresses(const std::ch
       anl::MulticastSocket socket;
       std::thread listeningThread([&socket, &addresses, this]
          {
-            socket.sendData(TimeProtocol::makeDiscoveryCmd(), this->discoveryAddress);
+            try
+            {
+               socket.sendData(TimeProtocol::makeDiscoveryCmd(), this->discoveryAddress);
+            }
+            catch(...)
+            {
+               return;
+            }
 
             anl::Data recvData;
             while(true)
